@@ -30,7 +30,7 @@ public class AnnouncementController {
 
   @GetMapping("{uuid}")
   @Operation(summary = "Получить обьявление по uuid")
-  public Response deleteAnnouncementByUUID(@PathVariable UUID uuid) {
+  public Response getAnnouncementsByUUID(@PathVariable UUID uuid) {
     try {
       return _service.getAnnouncementByUUID(uuid);
     } catch (Exception e) {
@@ -40,7 +40,7 @@ public class AnnouncementController {
 
   @DeleteMapping("{uuid}")
   @Operation(summary = "архирировать обьявление")
-  public Response setAnnouncementArchive(@PathVariable UUID uuid) {
+  public Response deleteAnnouncementByUUID(@PathVariable UUID uuid) {
     try {
       return _service.setAnnouncementArchive(uuid);
     } catch (Exception e) {
