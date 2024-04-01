@@ -3,17 +3,15 @@ package ithub.announcementservice.backend.routes.announcements;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import ithub.announcementservice.backend.app.types.response.Response;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
-@Tag(name = "обьявления")
+@Tag(name = "Обьявления")
 @RestController
 @RequestMapping("/announcements")
 public class AnnouncementController {
-  @Autowired
   private final AnnouncementService announcementService;
 
   public AnnouncementController(final AnnouncementService announcementService) {
@@ -22,31 +20,31 @@ public class AnnouncementController {
 
   @GetMapping()
   @Operation(summary = "Получить все обьявления")
-  public Response getAllAnnouncements() {
+  public Response findAllAnnouncements() {
     try {
-      return this.announcementService.getAllAnnouncements();
-    } catch (Exception e) {
-      return new Response(HttpStatus.INTERNAL_SERVER_ERROR.value(), "error: " + e.getMessage());
+      return this.announcementService.findAll();
+    } catch (Exception err) {
+      return new Response(HttpStatus.INTERNAL_SERVER_ERROR.value(), err.getMessage());
     }
   }
 
   @GetMapping("{uuid}")
   @Operation(summary = "Получить обьявление по uuid")
-  public Response getAnnouncementsByUUID(@PathVariable UUID uuid) {
+  public Response findAnnouncementByUUID(@PathVariable UUID uuid) {
     try {
-      return this.announcementService.getAnnouncementByUUID(uuid);
-    } catch (Exception e) {
-      return new Response(HttpStatus.INTERNAL_SERVER_ERROR.value(), "error: " + e.getMessage());
+      return this.announcementService.findByUUID(uuid);
+    } catch (Exception err) {
+      return new Response(HttpStatus.INTERNAL_SERVER_ERROR.value(), err.getMessage());
     }
   }
 
   @DeleteMapping("{uuid}")
-  @Operation(summary = "архирировать обьявление")
+  @Operation(summary = "Архирировать обьявление")
   public Response deleteAnnouncementByUUID(@PathVariable UUID uuid) {
     try {
-      return this.announcementService.setAnnouncementArchive(uuid);
-    } catch (Exception e) {
-      return new Response(HttpStatus.INTERNAL_SERVER_ERROR.value(), "error: " + e.getMessage());
+      return this.announcementService.deleteByUUID(uuid);
+    } catch (Exception err) {
+      return new Response(HttpStatus.INTERNAL_SERVER_ERROR.value(), err.getMessage());
     }
   }
 }
