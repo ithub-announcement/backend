@@ -1,9 +1,11 @@
-package ithub.announcementservice.backend.app.domain.models;
+package ithub.announcementservice.backend.app.domain.models.entities;
 
+import ithub.announcementservice.backend.app.domain.models.AnnouncementStatus;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.time.ZonedDateTime;
 import java.util.UUID;
 
 @Data
@@ -23,6 +25,8 @@ public class Announcement {
     private String content;
 
     private String authorId;
+
+    private ZonedDateTime dateTime;
 
     @Enumerated
     private AnnouncementStatus status;
