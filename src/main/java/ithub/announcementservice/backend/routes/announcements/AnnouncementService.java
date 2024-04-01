@@ -50,7 +50,7 @@ public class AnnouncementService {
     }
   }
 
-  public Response setAnnouncementArchive(UUID uuid) {
+  public Response deleteAnnouncementByUUID(UUID uuid) {
     try {
       Optional<Announcement> announcement = this.repository.findById(uuid);
 
