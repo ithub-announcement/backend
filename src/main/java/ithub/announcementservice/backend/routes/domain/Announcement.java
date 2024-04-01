@@ -18,4 +18,15 @@ public class Announcement {
     @Column(name = "uuid", length = 36, unique = true, nullable = false, updatable = false)
     private UUID id;
 
+    @Column(name = "tittle")
+    private String tittle;
+
+    @OneToMany(mappedBy = "Announcement")
+    private List<AnnouncementBlock> content;
+
+    @Column(name = "author")
+    private String authorID;
+
+    @Column(name = "Status")
+    private AnnouncementStatus status;
 }
