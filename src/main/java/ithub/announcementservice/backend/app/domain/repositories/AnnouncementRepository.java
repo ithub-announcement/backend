@@ -5,10 +5,11 @@ import ithub.announcementservice.backend.app.domain.models.AnnouncementStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface AnnouncementRepository extends JpaRepository<Announcement, UUID> {
   List<Announcement> findByStatus(AnnouncementStatus status);
 
-  Announcement findByStatusAndUuid(AnnouncementStatus status, UUID uuid);
+  Optional<Announcement> findByStatusAndUuid(AnnouncementStatus status, UUID uuid);
 }
