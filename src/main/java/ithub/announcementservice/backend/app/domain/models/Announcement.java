@@ -1,10 +1,9 @@
-package ithub.announcementservice.backend.routes.domain;
+package ithub.announcementservice.backend.app.domain.models;
 
 import jakarta.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
 import lombok.Data;
 
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,18 +14,17 @@ public class Announcement {
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    @Column(name = "uuid", length = 36, unique = true, nullable = false, updatable = false)
-    private UUID id;
+    @Column(name = "uuid", unique = true, nullable = false, updatable = false)
+    private UUID uuid;
 
-    @Column(name = "tittle")
-    private String tittle;
+    @Column(name = "title", nullable = false)
+    private String title;
 
-    @OneToMany(mappedBy = "Announcement")
+    @OneToMany(cascade = CascadeType.MERGE)
     private List<AnnouncementBlock> content;
 
-    @Column(name = "author")
-    private String authorID;
+    private String authorId;
 
-    @Column(name = "Status")
+    @Enumerated
     private AnnouncementStatus status;
 }
