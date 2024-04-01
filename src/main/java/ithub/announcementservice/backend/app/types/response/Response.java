@@ -6,8 +6,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Data
-@Getter
-@Setter
 @JsonPropertyOrder({"status", "message"})
 public class Response {
     private final int status;
