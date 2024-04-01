@@ -28,6 +28,5 @@ public class Announcement {
 
     private ZonedDateTime dateTime;
 
-    @Enumerated
     private AnnouncementStatus status;
 }
