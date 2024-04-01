@@ -29,15 +29,10 @@ public class AnnouncementService {
     _repository = repository;
   }
 
-  public Response getAllAnnouncements(@Min(0) int page, @Min(1) int size) {
+  public Response getAllAnnouncements() {
     try {
-      if (page < 0 || size <= 0) {
-        throw new IllegalArgumentException("страницы не должны быть нулем и лимит должет быть положительный!");
-      }
-      Page<Announcement> announcements = _repository.findAll(PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "dateTime")));
-      return new ResponseData<>(HttpStatus.OK.value(), "found", announcements.getContent());
-    } catch (IllegalArgumentException e) {
-      return new Response(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+      var announcements = _repository.findAll(Sort.by(Sort.Direction.DESC, "dateTime"));
+      return new ResponseData<>(HttpStatus.OK.value(), "found", announcements);
     } catch (Exception e) {
       return new Response(HttpStatus.INTERNAL_SERVER_ERROR.value(), "error: " + e.getMessage());
     }
