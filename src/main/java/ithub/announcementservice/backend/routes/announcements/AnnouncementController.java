@@ -30,7 +30,7 @@ public class AnnouncementController {
 
   @GetMapping("{uuid}")
   @Operation(summary = "Получить обьявление по uuid")
-  public Response getAnnouncementsByUUID(@PathVariable UUID uuid) {
+  public Response deleteAnnouncementByUUID(@PathVariable UUID uuid) {
     try {
       return _service.getAnnouncementByUUID(uuid);
     } catch (Exception e) {
