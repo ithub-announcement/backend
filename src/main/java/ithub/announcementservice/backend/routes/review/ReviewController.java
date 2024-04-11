@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
-@Tag(name = "ревбю" , description = "сервис модерации")
+@Tag(name = "ревью" , description = "сервис модерации")
 @RestController
 @RequestMapping("/review")
 public class ReviewController {
@@ -68,5 +68,15 @@ public class ReviewController {
     }catch (Exception err){
       return new Response(HttpStatus.INTERNAL_SERVER_ERROR.value(), err.getMessage());
     }
+  }
+
+  @Operation(summary = "удалить")
+  @DeleteMapping("/delete/{uuid}")
+  public Response deleteReview(@PathVariable UUID uuid){
+      try {
+        return reviewService.deleteReview(uuid);
+      }catch (Exception err){
+        return new Response(HttpStatus.INTERNAL_SERVER_ERROR.value(), err.getMessage());
+      }
   }
 }
