@@ -1,7 +1,7 @@
-package ithub.announcementservice.backend.app.domain.repositories;
+package ithub.announcementservice.backend.core.domain.repositories;
 
-import ithub.announcementservice.backend.app.domain.models.AnnouncementStatus;
-import ithub.announcementservice.backend.app.domain.models.entities.Announcement;
+import ithub.announcementservice.backend.core.domain.models.AnnouncementStatus;
+import ithub.announcementservice.backend.core.domain.models.entities.Announcement;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

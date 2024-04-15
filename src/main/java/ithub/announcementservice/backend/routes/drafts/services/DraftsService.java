@@ -1,11 +1,11 @@
-package ithub.announcementservice.backend.routes.drafts;
+package ithub.announcementservice.backend.routes.drafts.services;
 
-import ithub.announcementservice.backend.app.config.Mapper;
-import ithub.announcementservice.backend.app.domain.models.AnnouncementStatus;
-import ithub.announcementservice.backend.app.domain.models.entities.Announcement;
-import ithub.announcementservice.backend.app.domain.repositories.AnnouncementRepository;
-import ithub.announcementservice.backend.app.types.response.Response;
-import ithub.announcementservice.backend.app.types.response.ResponseData;
+import ithub.announcementservice.backend.core.config.Mapper;
+import ithub.announcementservice.backend.core.domain.models.AnnouncementStatus;
+import ithub.announcementservice.backend.core.domain.models.entities.Announcement;
+import ithub.announcementservice.backend.core.domain.repositories.AnnouncementRepository;
+import ithub.announcementservice.backend.core.models.response.types.Response;
+import ithub.announcementservice.backend.core.models.response.types.ResponseData;
 import ithub.announcementservice.backend.routes.drafts.models.DraftDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -29,9 +29,9 @@ public class DraftsService {
   public Response findAll() {
     try {
       return new ResponseData<List<Announcement>>(
-          HttpStatus.OK.value(),
-          "Список получен.",
-          this.repository.findByStatus(AnnouncementStatus.DRAFT)
+        HttpStatus.OK.value(),
+        "Список получен.",
+        this.repository.findByStatus(AnnouncementStatus.DRAFT)
       );
     } catch (Exception err) {
       throw new RuntimeException(err);
