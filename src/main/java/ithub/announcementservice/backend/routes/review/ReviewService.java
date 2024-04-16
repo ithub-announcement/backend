@@ -30,24 +30,13 @@ public class ReviewService {
 
   public Response acceptReview(UUID uuid, List<Integer> tags) {
     try {
-      if (uuid == null) {
-        return new Response(HttpStatus.NO_CONTENT.value(), "UUID is empty");
-      }
+      Announcement current = announcementRepository.findById(uuid).get();
 
-      Optional<Announcement> current = announcementRepository.findById(uuid);
-
-      if (current.isEmpty()) {
-        return new Response(HttpStatus.NO_CONTENT.value(), "Нет такого объявления");
-      }
-
-      Announcement announcement = current.get();
-
-      if (announcement.getStatus() != AnnouncementStatus.DRAFT) {
+      if (current.getStatus() != AnnouncementStatus.DRAFT) {
         return new Response(HttpStatus.NO_CONTENT.value(), "Это не черновик");
       }
 
-      Optional<Review> rev = Optional.ofNullable(this.mapper.getMapper().map(current, Review.class));
-      Review review = rev.get();
+      Review review = Optional.ofNullable(this.mapper.getMapper().map(current, Review.class)).get();
 
       review.setTags(tags);
       reviewRepository.save(review);
@@ -58,22 +47,12 @@ public class ReviewService {
     }
   }
 
-  public Response rejectReview(UUID uuid, String comments) {
+  public Response rejectReview(UUID uuid, String reason) {
     try {
-      if (uuid == null) {
-        return new Response(HttpStatus.NO_CONTENT.value(), "UUID is empty");
-      }
-
-      Optional<Review> current = reviewRepository.findById(uuid);
-
-      if (current.isEmpty()) {
-        return new Response(HttpStatus.NO_CONTENT.value(), "Нет такого объявления");
-      }
-
-      Review review = current.get();
+      Review review = reviewRepository.findById(uuid).get();
 
       review.setStatusReview(StatusReview.reject);
-      review.setComments(comments);
+      review.setReason(reason);
 
       reviewRepository.save(review);
       return new Response(HttpStatus.OK.value(), "Успешно отклонена");
@@ -84,17 +63,7 @@ public class ReviewService {
 
   public Response approveReview(UUID uuid) {
     try {
-      if (uuid == null) {
-        return new Response(HttpStatus.NO_CONTENT.value(), "UUID is empty");
-      }
-
-      Optional<Review> current = reviewRepository.findById(uuid);
-
-      if (current.isEmpty()) {
-        return new Response(HttpStatus.NO_CONTENT.value(), "Нет такого объявления");
-      }
-
-      Review review = current.get();
+      Review review = reviewRepository.findById(uuid).get();
 
       if (review.getStatusReview() == StatusReview.reject) {
         return new Response(HttpStatus.NO_CONTENT.value(), "объявление отклонено");
@@ -111,16 +80,7 @@ public class ReviewService {
 
   public Response getReview(UUID uuid) {
     try {
-      if (uuid == null) {
-        return new Response(HttpStatus.NO_CONTENT.value(), "UUID is empty");
-      }
-
       Optional<Review> current = reviewRepository.findById(uuid);
-
-      if (current.isEmpty()) {
-        return new Response(HttpStatus.NO_CONTENT.value(), "Нет такого объявления");
-      }
-
       return new ResponseData<Review>(HttpStatus.OK.value(), "Успешно получено", current.get());
     } catch (Exception err) {
       return new Response(HttpStatus.INTERNAL_SERVER_ERROR.value(), err.getMessage());
@@ -137,10 +97,6 @@ public class ReviewService {
 
   public Response deleteReview(UUID uuid) {
     try {
-      if (uuid == null) {
-        return new Response(HttpStatus.NO_CONTENT.value(), "UUID is empty");
-      }
-
       reviewRepository.deleteById(uuid);
       return new Response((HttpStatus.OK.value()), "успешно отклонено");
     } catch (Exception err) {

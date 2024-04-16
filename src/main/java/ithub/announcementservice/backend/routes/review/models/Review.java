@@ -25,7 +25,7 @@ public class Review {
 
   private ZonedDateTime dateTime;
 
-  private String comments;
+  private String reason;
 
   @ElementCollection
   private List<Integer> tags;
