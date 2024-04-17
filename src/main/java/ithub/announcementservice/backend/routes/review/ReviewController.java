@@ -20,7 +20,6 @@ public class ReviewController {
     reviewService = reviewservices;
   }
 
-
   @Operation(summary = "принять на модерацию")
   @PostMapping("/accept/{uuid}")
   public Response acceptReview(@PathVariable UUID uuid, @RequestHeader List<Integer> tags) {
@@ -46,7 +45,7 @@ public class ReviewController {
   }
 
   @Operation(summary = "получить все")
-  @GetMapping("/")
+  @GetMapping()
   public Response getReviews() {
     return reviewService.getReviews();
   }
