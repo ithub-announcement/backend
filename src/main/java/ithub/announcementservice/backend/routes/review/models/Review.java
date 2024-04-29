@@ -1,5 +1,6 @@
 package ithub.announcementservice.backend.routes.review.models;
 
+import ithub.announcementservice.backend.routes.tags.models.TagEntity;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -27,8 +28,8 @@ public class Review {
 
   private String reason;
 
-  @ElementCollection
-  private List<Integer> tags;
+  @ManyToMany
+  private List<TagEntity> tags;
 
   private StatusReview statusReview;
 }

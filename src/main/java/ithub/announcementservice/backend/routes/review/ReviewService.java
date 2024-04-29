@@ -30,11 +30,7 @@ public class ReviewService {
 
   public Response acceptReview(UUID uuid, List<Integer> tags) {
     try {
-      Announcement current = announcementRepository.findById(uuid).get();
-
-      if (current.getStatus() != AnnouncementStatus.DRAFT) {
-        return new Response(HttpStatus.NO_CONTENT.value(), "Это не черновик");
-      }
+      Announcement current = announcementRepository.findByStatusAndUuid(AnnouncementStatus.DRAFT,uuid).get();
 
       Review review = Optional.ofNullable(this.mapper.getMapper().map(current, Review.class)).get();
 

@@ -11,5 +11,6 @@ import java.util.UUID;
 public interface AnnouncementRepository extends JpaRepository<Announcement, UUID> {
   List<Announcement> findByStatus(AnnouncementStatus status);
 
+
   Optional<Announcement> findByStatusAndUuid(AnnouncementStatus status, UUID uuid);
 }
