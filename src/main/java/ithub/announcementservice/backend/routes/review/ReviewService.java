@@ -9,6 +9,7 @@ import ithub.announcementservice.backend.app.types.response.ResponseData;
 import ithub.announcementservice.backend.routes.review.models.ReviewRepository;
 import ithub.announcementservice.backend.routes.review.models.StatusReview;
 import ithub.announcementservice.backend.routes.review.models.Review;
+import ithub.announcementservice.backend.routes.tags.models.TagEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +29,14 @@ public class ReviewService {
     this.mapper = mapper;
   }
 
-  public Response acceptReview(UUID uuid, List<Integer> tags) {
+  /**
+   * Принять на модерацию
+   *
+   * @param uuid UUID
+   * @param tags List<TagEntity>
+   * */
+
+  public Response acceptReview(UUID uuid, List<TagEntity> tags) {
     try {
       Announcement current = announcementRepository.findByStatusAndUuid(AnnouncementStatus.DRAFT,uuid).get();
 
@@ -43,6 +51,13 @@ public class ReviewService {
     }
   }
 
+  /**
+   * Отклонить публикацию
+   *
+   * @param uuid UUID
+   * @param reason String
+   * */
+
   public Response rejectReview(UUID uuid, String reason) {
     try {
       Review review = reviewRepository.findById(uuid).get();
@@ -56,6 +71,12 @@ public class ReviewService {
       return new Response(HttpStatus.INTERNAL_SERVER_ERROR.value(), err.getMessage());
     }
   }
+
+  /**
+   * Одобрить публикацию
+   *
+   * @param uuid UUID
+   * */
 
   public Response approveReview(UUID uuid) {
     try {
@@ -74,22 +95,38 @@ public class ReviewService {
     }
   }
 
+  /**
+   * Получить одну публикацию
+   *
+   * @param uuid UUID
+   * */
+
   public Response getReview(UUID uuid) {
     try {
       Optional<Review> current = reviewRepository.findById(uuid);
-      return new ResponseData<Review>(HttpStatus.OK.value(), "Успешно получено", current.get());
+      return new ResponseData<>(HttpStatus.OK.value(), "Успешно получено", current.get());
     } catch (Exception err) {
       return new Response(HttpStatus.INTERNAL_SERVER_ERROR.value(), err.getMessage());
     }
   }
 
+  /**
+   * Получить все публикации находящиеся на модерации
+   * */
+
   public Response getReviews() {
     try {
-      return new ResponseData<List<Review>>(HttpStatus.OK.value(), "Успешно получено", reviewRepository.findAll());
+      return new ResponseData<>(HttpStatus.OK.value(), "Успешно получено", reviewRepository.findAll());
     } catch (Exception err) {
       return new Response(HttpStatus.INTERNAL_SERVER_ERROR.value(), err.getMessage());
     }
   }
+
+  /**
+   * Удалить публикацию
+   *
+   * @param uuid UUID
+   * */
 
   public Response deleteReview(UUID uuid) {
     try {
