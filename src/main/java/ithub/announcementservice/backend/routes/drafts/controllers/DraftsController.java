@@ -17,8 +17,8 @@ public class DraftsController {
   }
 
   @GetMapping()
-  public Response findAllDrafts() {
-    return this.draftsService.findAll();
+  public Response findAllDrafts(@RequestHeader String token) {
+    return this.draftsService.findAll(token);
   }
 
   @GetMapping("{uuid}")

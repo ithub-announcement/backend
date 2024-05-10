@@ -6,6 +6,7 @@ import ithub.announcementservice.backend.core.domain.models.entities.Announcemen
 import ithub.announcementservice.backend.core.domain.repositories.AnnouncementRepository;
 import ithub.announcementservice.backend.core.models.response.types.Response;
 import ithub.announcementservice.backend.core.models.response.types.ResponseData;
+import ithub.announcementservice.backend.routes.auth.RestClientForAuth;
 import ithub.announcementservice.backend.routes.drafts.models.DraftDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -19,14 +20,16 @@ import java.util.UUID;
 @Service
 public class DraftsService {
   private final AnnouncementRepository repository;
+  private final RestClientForAuth auth;
   private final Mapper mapper;
 
-  public DraftsService(final AnnouncementRepository repository, final Mapper mapper) {
+  public DraftsService(final AnnouncementRepository repository, RestClientForAuth auth, final Mapper mapper) {
     this.repository = repository;
+    this.auth = auth;
     this.mapper = mapper;
   }
 
-  public Response findAll() {
+  public Response findAll(String token) {
     try {
       return new ResponseData<List<Announcement>>(
         HttpStatus.OK.value(),
