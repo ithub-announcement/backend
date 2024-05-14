@@ -7,6 +7,7 @@ import ithub.announcementservice.backend.core.domain.repositories.AnnouncementRe
 import ithub.announcementservice.backend.core.models.response.types.Response;
 import ithub.announcementservice.backend.core.models.response.types.ResponseData;
 import ithub.announcementservice.backend.routes.drafts.models.DraftDTO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +17,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
+@Slf4j
 @Service
 public class DraftsService {
   private final AnnouncementRepository repository;
