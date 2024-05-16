@@ -8,6 +8,7 @@ import ithub.announcementservice.backend.core.models.response.types.Response;
 import ithub.announcementservice.backend.core.models.response.types.ResponseData;
 import ithub.announcementservice.backend.routes.auth.RestClientForAuth;
 import ithub.announcementservice.backend.routes.drafts.models.DraftDTO;
+import org.aspectj.weaver.patterns.IToken;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -29,21 +30,24 @@ public class DraftsService {
     this.mapper = mapper;
   }
 
-  public Response findAll(String token) {
+  public Response findAll(String Token) {
     try {
       return new ResponseData<List<Announcement>>(
         HttpStatus.OK.value(),
         "Список получен.",
-        this.repository.findByStatus(AnnouncementStatus.DRAFT)
+        this.repository.findAnnouncementByAuthorIdAndAndStatus(auth.getUserByToken(Token),AnnouncementStatus.DRAFT)
       );
     } catch (Exception err) {
       throw new RuntimeException(err);
     }
   }
 
-  public Response findByUuid(String uuid) {
+  public Response findByUuid(String Token, String uuid) {
     try {
-      Optional<Announcement> current = this.repository.findByStatusAndUuid(AnnouncementStatus.DRAFT, UUID.fromString(uuid));
+      Optional<Announcement> current = this.repository.findAnnouncementByAuthorIdAndStatusAndUuid(
+        auth.getUserByToken(Token),
+        AnnouncementStatus.DRAFT,
+        UUID.fromString(uuid));
 
       if (current.isEmpty()) {
         return new Response(HttpStatus.NOT_FOUND.value(), "Черновик не найден.");
@@ -56,7 +60,7 @@ public class DraftsService {
     }
   }
 
-  private Announcement create(DraftDTO body) {
+  private Announcement create(String author,DraftDTO body) {
     try {
       Optional<Announcement> current = Optional.ofNullable(this.mapper.getMapper().map(body, Announcement.class));
 
@@ -66,6 +70,7 @@ public class DraftsService {
 
       current.get().setDateTime(ZonedDateTime.now(ZoneOffset.UTC));
       current.get().setStatus(AnnouncementStatus.DRAFT);
+      current.get().setAuthorId(author);
 
       return this.repository.save(current.get());
     } catch (Exception err) {
@@ -73,9 +78,12 @@ public class DraftsService {
     }
   }
 
-  private Announcement update(String uuid, DraftDTO body) {
+  private Announcement update(String author, String uuid, DraftDTO body) {
     try {
-      Optional<Announcement> current = this.repository.findByStatusAndUuid(AnnouncementStatus.DRAFT, UUID.fromString(uuid));
+      Optional<Announcement> current = this.repository.findAnnouncementByAuthorIdAndStatusAndUuid(
+        author,
+        AnnouncementStatus.DRAFT,
+        UUID.fromString(uuid));
 
       if (current.isEmpty()) {
         return null;
@@ -91,19 +99,24 @@ public class DraftsService {
     }
   }
 
-  public Response save(String uuid, DraftDTO body) {
+  public Response save(String Token, String uuid, DraftDTO body) {
     try {
-      if (uuid != null)
-        return new ResponseData<Announcement>(HttpStatus.ACCEPTED.value(), "Черновик изменен.", this.update(uuid, body));
-      return new ResponseData<Announcement>(HttpStatus.CREATED.value(), "Черновик создан.", this.create(body));
+      String author = this.auth.getUserByToken(Token);
+      if (uuid != null) {
+        return new ResponseData<Announcement>(HttpStatus.ACCEPTED.value(), "Черновик изменен.", this.update(author,uuid, body));
+      }
+      return new ResponseData<Announcement>(HttpStatus.CREATED.value(), "Черновик создан.", this.create(author,body));
     } catch (Exception err) {
       throw new RuntimeException(err);
     }
   }
 
-  public Response delete(String uuid) {
+  public Response delete(String Token, String uuid) {
     try {
-      Optional<Announcement> current = this.repository.findByStatusAndUuid(AnnouncementStatus.DRAFT, UUID.fromString(uuid));
+      Optional<Announcement> current = this.repository.findAnnouncementByAuthorIdAndStatusAndUuid(
+        auth.getUserByToken(Token),
+        AnnouncementStatus.DRAFT,
+        UUID.fromString(uuid));
 
       if (current.isEmpty()) {
         return new Response(HttpStatus.NOT_FOUND.value(), "Черновик ненайден.");

@@ -14,4 +14,8 @@ public interface AnnouncementRepository extends JpaRepository<Announcement, UUID
   List<Announcement> findByStatus(AnnouncementStatus status);
 
   Optional<Announcement> findByStatusAndUuid(AnnouncementStatus status, UUID uuid);
+
+  List<Announcement> findAnnouncementByAuthorIdAndAndStatus(String authorId, AnnouncementStatus status);
+
+  Optional<Announcement> findAnnouncementByAuthorIdAndStatusAndUuid(String authorId, AnnouncementStatus status, UUID uuid );
 }
