@@ -3,8 +3,8 @@ package ithub.announcementservice.backend.routes.review;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import ithub.announcementservice.backend.app.types.response.Response;
 
+import ithub.announcementservice.backend.core.models.response.types.Response;
 import ithub.announcementservice.backend.routes.tags.models.TagEntity;
 import org.springframework.web.bind.annotation.*;
 

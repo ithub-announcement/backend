@@ -1,11 +1,11 @@
 package ithub.announcementservice.backend.routes.review;
 
-import ithub.announcementservice.backend.app.config.Mapper;
-import ithub.announcementservice.backend.app.domain.models.AnnouncementStatus;
-import ithub.announcementservice.backend.app.domain.models.entities.Announcement;
-import ithub.announcementservice.backend.app.domain.repositories.AnnouncementRepository;
-import ithub.announcementservice.backend.app.types.response.Response;
-import ithub.announcementservice.backend.app.types.response.ResponseData;
+import ithub.announcementservice.backend.core.config.Mapper;
+import ithub.announcementservice.backend.core.domain.models.AnnouncementStatus;
+import ithub.announcementservice.backend.core.domain.models.entities.Announcement;
+import ithub.announcementservice.backend.core.domain.repositories.AnnouncementRepository;
+import ithub.announcementservice.backend.core.models.response.types.Response;
+import ithub.announcementservice.backend.core.models.response.types.ResponseData;
 import ithub.announcementservice.backend.routes.review.models.ReviewRepository;
 import ithub.announcementservice.backend.routes.review.models.StatusReview;
 import ithub.announcementservice.backend.routes.review.models.Review;
