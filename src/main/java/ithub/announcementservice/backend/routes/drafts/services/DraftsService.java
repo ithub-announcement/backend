@@ -7,6 +7,7 @@ import ithub.announcementservice.backend.core.domain.repositories.AnnouncementRe
 import ithub.announcementservice.backend.core.models.response.types.Response;
 import ithub.announcementservice.backend.core.models.response.types.ResponseData;
 import ithub.announcementservice.backend.routes.drafts.models.DraftDTO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +16,8 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
+import java.util.stream.Collectors;
+@Slf4j
 @Service
 public class DraftsService {
   private final AnnouncementRepository repository;
@@ -28,11 +30,23 @@ public class DraftsService {
 
   public Response findAll() {
     try {
-      return new ResponseData<List<Announcement>>(
+      List<Announcement> announcementList = repository.findAllByStatusOrderByDateTimeDesc(AnnouncementStatus.DRAFT);
+      ZonedDateTime thirtyDaysAgo = ZonedDateTime.now().minusDays(30);
+      for (Announcement announcement : announcementList) {
+        if (announcement.getDateTime().isBefore(thirtyDaysAgo)) {
+          announcement.setStatus(AnnouncementStatus.ARCHIVE);
+          log.info(announcement.getUuid() + ": was archived!" );
+          repository.save(announcement);
+        }
+      }
+
+      announcementList = announcementList.stream()
+        .filter(announcement -> announcement.getStatus().equals(AnnouncementStatus.DRAFT))
+        .collect(Collectors.toList());
+
+      return new ResponseData<>(
         HttpStatus.OK.value(),
-        "Список получен.",
-        this.repository.findByStatus(AnnouncementStatus.DRAFT)
-      );
+        "Список получен.", announcementList);
     } catch (Exception err) {
       throw new RuntimeException(err);
     }
