@@ -21,10 +21,7 @@ public class RestClientForAuth {
       HttpHeaders headers = new HttpHeaders();
       headers.setContentType(MediaType.APPLICATION_JSON);
 
-      Map<String, String> requestBody = new HashMap<>();
-      requestBody.put("accessToken", token);
-
-      HttpEntity<Map<String, String>> request = new HttpEntity<>(requestBody, headers);
+      HttpEntity<String> request = new HttpEntity<>(token, headers);
 
       String response = restTemplate.postForObject(url + param, request, String.class)
         .replaceAll("\"", "")
