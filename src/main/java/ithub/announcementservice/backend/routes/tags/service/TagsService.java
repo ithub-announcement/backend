@@ -1,4 +1,4 @@
-package ithub.announcementservice.backend.routes.tags;
+package ithub.announcementservice.backend.routes.tags.service;
 
 import ithub.announcementservice.backend.app.config.Mapper;
 import ithub.announcementservice.backend.app.types.response.Response;

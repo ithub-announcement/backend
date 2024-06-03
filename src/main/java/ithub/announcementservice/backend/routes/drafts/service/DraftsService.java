@@ -1,4 +1,4 @@
-package ithub.announcementservice.backend.routes.drafts;
+package ithub.announcementservice.backend.routes.drafts.service;
 
 import ithub.announcementservice.backend.app.config.Mapper;
 import ithub.announcementservice.backend.app.domain.models.AnnouncementStatus;

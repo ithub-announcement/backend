@@ -1,4 +1,4 @@
-package ithub.announcementservice.backend.routes.announcements;
+package ithub.announcementservice.backend.routes.announcements.service;
 
 import ithub.announcementservice.backend.app.domain.models.AnnouncementStatus;
 import ithub.announcementservice.backend.app.domain.models.entities.Announcement;
