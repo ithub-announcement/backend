@@ -10,6 +10,7 @@ import ithub.announcementservice.backend.routes.review.models.ReviewRepository;
 import ithub.announcementservice.backend.routes.review.models.StatusReview;
 import ithub.announcementservice.backend.routes.review.models.Review;
 import ithub.announcementservice.backend.routes.tags.models.TagEntity;
+import ithub.announcementservice.backend.routes.tags.services.TagsService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -21,11 +22,13 @@ import java.util.UUID;
 public class ReviewService {
   private final AnnouncementRepository announcementRepository;
   private final ReviewRepository reviewRepository;
+  private final TagsService tagsService;
   private final Mapper mapper;
 
-  public ReviewService(final AnnouncementRepository repository, ReviewRepository reviewRepository, final Mapper mapper) {
+  public ReviewService(final AnnouncementRepository repository, ReviewRepository reviewRepository, TagsService tagsService, final Mapper mapper) {
     this.announcementRepository = repository;
     this.reviewRepository = reviewRepository;
+    this.tagsService = tagsService;
     this.mapper = mapper;
   }
 
@@ -36,13 +39,12 @@ public class ReviewService {
    * @param tags List<TagEntity>
    * */
 
-  public Response acceptReview(UUID uuid, List<TagEntity> tags) {
+  public Response acceptReview(UUID uuid, List<Long> tags) {
     try {
       Announcement current = announcementRepository.findByStatusAndUuid(AnnouncementStatus.DRAFT,uuid).get();
-
       Review review = Optional.ofNullable(this.mapper.getMapper().map(current, Review.class)).get();
 
-      review.setTags(tags);
+      review.setTags(tagsService.findByIds(tags));
       reviewRepository.save(review);
 
       return new Response(HttpStatus.OK.value(), "Успешно принят");

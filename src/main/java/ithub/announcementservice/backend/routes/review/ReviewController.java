@@ -23,7 +23,7 @@ public class ReviewController {
 
   @Operation(summary = "принять на модерацию")
   @PostMapping("/accept/{uuid}")
-  public Response acceptReview(@PathVariable UUID uuid, @RequestHeader List<TagEntity> tags) {
+  public Response acceptReview(@PathVariable UUID uuid, @RequestBody List<Long> tags) {
     return reviewService.acceptReview(uuid, tags);
   }
 
