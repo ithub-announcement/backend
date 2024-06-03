@@ -62,4 +62,12 @@ public class TagsService {
       throw new RuntimeException(err);
     }
   }
+
+  public List<TagEntity> findByIds(List<Long> ids) {
+    try {
+      return this.repository.findAllById(ids);
+    }catch (Exception err){
+      throw new RuntimeException(err);
+    }
+  }
 }
