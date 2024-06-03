@@ -1,6 +1,8 @@
 package ithub.announcementservice.backend.routes.auth;
 
 import ithub.announcementservice.backend.routes.auth.models.User;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -11,8 +13,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
+@PropertySource("classpath:application.properties")
 public class RestClientForAuth {
-  private String url = "http://10.3.11.193:8080/api/";
+  @Value("urlServerAuth")
+  private String url;
 
   private String request(String token,String param){
     try {
@@ -45,11 +49,11 @@ public class RestClientForAuth {
   }
 
   public String getUserByToken(String token){
-    return request(token, "user/token").split("data:")[1];
+    return request(token, "/user/token").split("data:")[1];
   }
 
   public User getRoleAndUserByToken(String token){
-    String current = request(token,"user/token/role");
+    String current = request(token,"/user/token/role");
     User user = new User(current.split("uid:")[1].split(",")[0]
       ,current.split("role:")[1]);
 
