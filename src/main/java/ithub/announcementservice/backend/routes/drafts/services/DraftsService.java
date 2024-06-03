@@ -44,8 +44,9 @@ public class DraftsService {
 
   public Response findByUuid(String Token, String uuid) {
     try {
-      Optional<Announcement> current = this.repository.findAnnouncementByAuthorIdAndStatusAndUuid(
-        auth.getUserByToken(Token),
+      String author = auth.getUserByToken(Token);
+      Optional<Announcement> current = this.repository.findByAuthorIdAndStatusAndUuid(
+        author,
         AnnouncementStatus.DRAFT,
         UUID.fromString(uuid));
 
@@ -53,8 +54,11 @@ public class DraftsService {
         return new Response(HttpStatus.NOT_FOUND.value(), "Черновик не найден.");
       }
 
-      return new ResponseData<Announcement>(HttpStatus.OK.value(), "Черновик получен.", current.get());
+      if (author.equals(current.get().getAuthorId())){
+        return new ResponseData<Announcement>(HttpStatus.OK.value(), "Черновик получен.", current.get());
+      }
 
+      return new Response(HttpStatus.UNAUTHORIZED.value(),"Черновик не этого пользователя");
     } catch (Exception err) {
       throw new RuntimeException(err);
     }
@@ -78,9 +82,9 @@ public class DraftsService {
     }
   }
 
-  private Announcement update(String author, String uuid, DraftDTO body) {
+  private Response update(String author, String uuid, DraftDTO body) {
     try {
-      Optional<Announcement> current = this.repository.findAnnouncementByAuthorIdAndStatusAndUuid(
+      Optional<Announcement> current = this.repository.findByAuthorIdAndStatusAndUuid(
         author,
         AnnouncementStatus.DRAFT,
         UUID.fromString(uuid));
@@ -89,11 +93,16 @@ public class DraftsService {
         return null;
       }
 
+      if (!author.equals(current.get().getAuthorId())){
+        return new Response(HttpStatus.UNAUTHORIZED.value(),"Черновик не этого пользователя");
+      }
+
       current.get().setTitle(body.getTitle());
       current.get().setContent(body.getContent());
       current.get().setDateTime(ZonedDateTime.now(ZoneOffset.UTC));
 
-      return this.repository.save(current.get());
+      this.repository.save(current.get());
+      return new Response(HttpStatus.OK.value(), "Успешно сохранен");
     } catch (Exception err) {
       throw new RuntimeException(err);
     }
@@ -103,7 +112,7 @@ public class DraftsService {
     try {
       String author = this.auth.getUserByToken(Token);
       if (uuid != null) {
-        return new ResponseData<Announcement>(HttpStatus.ACCEPTED.value(), "Черновик изменен.", this.update(author,uuid, body));
+        return this.update(author,uuid, body);
       }
       return new ResponseData<Announcement>(HttpStatus.CREATED.value(), "Черновик создан.", this.create(author,body));
     } catch (Exception err) {
@@ -113,8 +122,9 @@ public class DraftsService {
 
   public Response delete(String Token, String uuid) {
     try {
-      Optional<Announcement> current = this.repository.findAnnouncementByAuthorIdAndStatusAndUuid(
-        auth.getUserByToken(Token),
+      String author = auth.getUserByToken(Token);
+      Optional<Announcement> current = this.repository.findByAuthorIdAndStatusAndUuid(
+        author,
         AnnouncementStatus.DRAFT,
         UUID.fromString(uuid));
 
@@ -122,8 +132,11 @@ public class DraftsService {
         return new Response(HttpStatus.NOT_FOUND.value(), "Черновик ненайден.");
       }
 
-      current.get().setStatus(AnnouncementStatus.ARCHIVE);
+      if (!author.equals(current.get().getAuthorId())){
+        return new Response(HttpStatus.UNAUTHORIZED.value(),"Черновик не этого пользователя");
+      }
 
+      current.get().setStatus(AnnouncementStatus.ARCHIVE);
       this.repository.save(current.get());
 
       return new Response(HttpStatus.I_AM_A_TEAPOT.value(), "Удален.");
