@@ -35,4 +35,9 @@ public class TagsController {
   public Response deleteTagById(@PathVariable Long id) {
     return this.tagsService.deleteById(id);
   }
+
+  @PutMapping("/update/{id}")
+  public Response updateTagById(@PathVariable Long id, @RequestBody TagDTO body) {
+    return this.tagsService.updateById(id, body);
+  }
 }

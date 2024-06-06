@@ -63,6 +63,24 @@ public class TagsService {
     }
   }
 
+  public Response updateById(Long id, @Valid TagDTO body) {
+    try {
+      Optional<TagEntity> existingTag = this.repository.findById(id);
+
+      if (existingTag.isEmpty()) {
+        return new Response(HttpStatus.NOT_FOUND.value(), "Нету");
+      }
+
+      TagEntity tagEntity = existingTag.get();
+      this.mapper.getMapper().map(body, tagEntity);
+      TagEntity updatedTag = this.repository.save(tagEntity);
+
+      return new ResponseData<>(HttpStatus.OK.value(), "Tag изменен", updatedTag);
+    } catch (Exception err) {
+      throw new RuntimeException("ничего не изменилось" + err.getMessage(), err);
+    }
+  }
+
   public List<TagEntity> findByIds(List<Long> ids) {
     try {
       return this.repository.findAllById(ids);
