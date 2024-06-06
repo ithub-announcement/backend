@@ -13,6 +13,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * ## Сервис объявлений.
+ *
+ * @author Минаков Эдуард
+ * */
+
 @Slf4j
 @Service
 public class AnnouncementService {
@@ -22,6 +28,10 @@ public class AnnouncementService {
     this.repository = repository;
   }
 
+  /**
+   * Получить список объявлений.
+   * */
+
   public Response findAll() {
     try {
       return new ResponseData<List<Announcement>>(HttpStatus.OK.value(), "found", this.repository.findByStatus(AnnouncementStatus.PUBLIC));
@@ -29,6 +39,12 @@ public class AnnouncementService {
       return new Response(HttpStatus.INTERNAL_SERVER_ERROR.value(), err.getMessage());
     }
   }
+
+  /**
+   * Получить объявление по UUID.
+   *
+   * @param uuid { UUID }
+   * */
 
   public Response findByUUID(UUID uuid) {
     try {
@@ -43,6 +59,12 @@ public class AnnouncementService {
       return new Response(HttpStatus.INTERNAL_SERVER_ERROR.value(), "error: " + err.getMessage());
     }
   }
+
+  /**
+   * Удалить объяление по UUID.
+   *
+   * @param uuid { UUID }
+   * */
 
   public Response deleteByUUID(UUID uuid) {
     try {

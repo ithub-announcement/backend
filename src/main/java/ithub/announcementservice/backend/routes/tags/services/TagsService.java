@@ -16,7 +16,7 @@ import java.util.Optional;
 /**
  * ## Сервис категорий.
  *
- * @author loseex
+ * @author Чехонадских Дмитрий
  * */
 
 @Service

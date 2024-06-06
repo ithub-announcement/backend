@@ -19,7 +19,7 @@ import java.util.UUID;
 /**
  * ## Сервис черновиков
  *
- * @author loseex
+ * @author Чехонадских Дмитрий
  * */
 
 @Service

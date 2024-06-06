@@ -17,6 +17,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * ## Сервис модерации.
+ *
+ * @author Горелов Дмитрий
+ * */
+
 @Service
 public class ReviewService {
   private final AnnouncementRepository announcementRepository;
