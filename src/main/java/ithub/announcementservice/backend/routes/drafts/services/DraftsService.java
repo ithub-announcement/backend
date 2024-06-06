@@ -8,7 +8,6 @@ import ithub.announcementservice.backend.core.models.response.types.Response;
 import ithub.announcementservice.backend.core.models.response.types.ResponseData;
 import ithub.announcementservice.backend.routes.auth.RestClientForAuth;
 import ithub.announcementservice.backend.routes.drafts.models.DraftDTO;
-import org.aspectj.weaver.patterns.IToken;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +23,7 @@ public class DraftsService {
   private final RestClientForAuth auth;
   private final Mapper mapper;
 
-  public DraftsService(final AnnouncementRepository repository, RestClientForAuth auth, final Mapper mapper) {
+  public DraftsService(final AnnouncementRepository repository, final RestClientForAuth auth, final Mapper mapper) {
     this.repository = repository;
     this.auth = auth;
     this.mapper = mapper;
@@ -32,10 +31,10 @@ public class DraftsService {
 
   public Response findAll(String Token) {
     try {
-      return new ResponseData<List<Announcement>>(
+      return new ResponseData<>(
         HttpStatus.OK.value(),
         "Список получен.",
-        this.repository.findAnnouncementByAuthorIdAndAndStatus(auth.getUserByToken(Token),AnnouncementStatus.DRAFT)
+        this.repository.findByAuthorIdAndStatus(auth.getUserByToken(Token),AnnouncementStatus.DRAFT)
       );
     } catch (Exception err) {
       throw new RuntimeException(err);

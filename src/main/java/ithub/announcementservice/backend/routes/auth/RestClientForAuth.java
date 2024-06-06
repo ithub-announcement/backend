@@ -9,13 +9,11 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
 @PropertySource("classpath:application.properties")
 public class RestClientForAuth {
-  @Value("urlServerAuth")
+  @Value("${urlServerAuth}")
   private String url;
 
   private String request(String token,String param){
@@ -26,7 +24,6 @@ public class RestClientForAuth {
       headers.setContentType(MediaType.APPLICATION_JSON);
 
       HttpEntity<String> request = new HttpEntity<>(token, headers);
-
       String response = restTemplate.postForObject(url + param, request, String.class)
         .replaceAll("\"", "")
         .replaceAll("}", "");
