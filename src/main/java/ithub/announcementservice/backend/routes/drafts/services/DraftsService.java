@@ -16,6 +16,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * ## Сервис черновиков
+ *
+ * @author Чехонадских Дмитрий
+ * */
+
 @Service
 public class DraftsService {
   private final AnnouncementRepository repository;
@@ -25,6 +31,10 @@ public class DraftsService {
     this.repository = repository;
     this.mapper = mapper;
   }
+
+  /**
+   * Получить все черновики.
+   * */
 
   public Response findAll() {
     try {
@@ -37,6 +47,12 @@ public class DraftsService {
       throw new RuntimeException(err);
     }
   }
+
+  /**
+   * Получить черновик по UUID.
+   *
+   * @param uuid { String }
+   * */
 
   public Response findByUuid(String uuid) {
     try {
@@ -52,6 +68,12 @@ public class DraftsService {
       throw new RuntimeException(err);
     }
   }
+
+  /**
+   * Создать черновик.
+   *
+   * @param body { DraftDTO }
+   * */
 
   private Announcement create(DraftDTO body) {
     try {
@@ -69,6 +91,13 @@ public class DraftsService {
       throw new RuntimeException(err);
     }
   }
+
+  /**
+   * Обновить черновик по UUID.
+   *
+   * @param uuid { String }
+   * @param body { DraftDTO }
+   * */
 
   private Announcement update(String uuid, DraftDTO body) {
     try {
@@ -88,6 +117,14 @@ public class DraftsService {
     }
   }
 
+  /**
+   * Сохранить черновик по UUID.
+   * Это публичный метод, который вызывает уже создание, либо обновление черновика.
+   *
+   * @param uuid { String }
+   * @param body { DraftDTO }
+   * */
+
   public Response save(String uuid, DraftDTO body) {
     try {
       if (uuid != null)
@@ -97,6 +134,12 @@ public class DraftsService {
       throw new RuntimeException(err);
     }
   }
+
+  /**
+   * Удалить черновик.
+   *
+   * @param uuid { String }
+   * */
 
   public Response delete(String uuid) {
     try {

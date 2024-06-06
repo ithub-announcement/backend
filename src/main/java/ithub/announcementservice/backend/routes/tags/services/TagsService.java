@@ -13,6 +13,12 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * ## Сервис категорий.
+ *
+ * @author Чехонадских Дмитрий
+ * */
+
 @Service
 public class TagsService {
   private final TagsRepository repository;
@@ -23,6 +29,12 @@ public class TagsService {
     this.mapper = mapper;
   }
 
+  /**
+   * Создать категорию.
+   *
+   * @param body { TagDTO }
+   * */
+
   public Response create(@Valid TagDTO body) {
     try {
       Optional<TagEntity> current = Optional.ofNullable(this.mapper.getMapper().map(body, TagEntity.class));
@@ -32,6 +44,10 @@ public class TagsService {
     }
   }
 
+  /**
+   * Получить все категории.
+   * */
+
   public Response findAll() {
     try {
       return new ResponseData<List<TagEntity>>(HttpStatus.OK.value(), "Success", this.repository.findAll());
@@ -39,6 +55,12 @@ public class TagsService {
       throw new RuntimeException(err);
     }
   }
+
+  /**
+   * Получить категорию по ID.
+   *
+   * @param id { Long }
+   * */
 
   public Response findById(Long id) {
     try {
@@ -54,6 +76,12 @@ public class TagsService {
     }
   }
 
+  /**
+   * Удалить категорию.
+   *
+   * @param id { Long }
+   * */
+
   public Response deleteById(Long id) {
     try {
       this.repository.deleteById(id);
@@ -62,6 +90,12 @@ public class TagsService {
       throw new RuntimeException(err);
     }
   }
+
+  /**
+   * Получить список категорий по ID.
+   *
+   * @param ids { Long[] }
+   * */
 
   public List<TagEntity> findByIds(List<Long> ids) {
     try {
