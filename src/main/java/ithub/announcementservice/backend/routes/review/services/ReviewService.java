@@ -1,4 +1,4 @@
-package ithub.announcementservice.backend.routes.review;
+package ithub.announcementservice.backend.routes.review.services;
 
 import ithub.announcementservice.backend.core.config.Mapper;
 import ithub.announcementservice.backend.core.domain.models.AnnouncementStatus;
@@ -6,10 +6,9 @@ import ithub.announcementservice.backend.core.domain.models.entities.Announcemen
 import ithub.announcementservice.backend.core.domain.repositories.AnnouncementRepository;
 import ithub.announcementservice.backend.core.models.response.types.Response;
 import ithub.announcementservice.backend.core.models.response.types.ResponseData;
-import ithub.announcementservice.backend.routes.review.models.ReviewRepository;
+import ithub.announcementservice.backend.routes.review.repositories.ReviewRepository;
 import ithub.announcementservice.backend.routes.review.models.StatusReview;
 import ithub.announcementservice.backend.routes.review.models.Review;
-import ithub.announcementservice.backend.routes.tags.models.TagEntity;
 import ithub.announcementservice.backend.routes.tags.services.TagsService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
