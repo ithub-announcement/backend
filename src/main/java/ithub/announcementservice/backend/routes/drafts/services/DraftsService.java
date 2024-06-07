@@ -17,6 +17,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * ## Сервис черновиков
+ *
+ * @author Чехонадских Дмитрий
+ * */
+
 @Service
 public class DraftsService {
   private final AnnouncementRepository repository;
@@ -29,6 +35,10 @@ public class DraftsService {
     this.mapper = mapper;
   }
 
+  /**
+   * Получить все черновики.
+   * */
+
   public Response findAll(String Token) {
     try {
       return new ResponseData<>(
@@ -40,6 +50,12 @@ public class DraftsService {
       throw new RuntimeException(err);
     }
   }
+
+  /**
+   * Получить черновик по UUID.
+   *
+   * @param uuid { String }
+   * */
 
   public Response findByUuid(String Token, String uuid) {
     try {
@@ -63,7 +79,14 @@ public class DraftsService {
     }
   }
 
+  /**
+   * Создать черновик.
+   *
+   * @param body { DraftDTO }
+   * */
+
   private Announcement create(String author,DraftDTO body) {
+
     try {
       Optional<Announcement> current = Optional.ofNullable(this.mapper.getMapper().map(body, Announcement.class));
 
@@ -80,6 +103,13 @@ public class DraftsService {
       throw new RuntimeException(err);
     }
   }
+
+  /**
+   * Обновить черновик по UUID.
+   *
+   * @param uuid { String }
+   * @param body { DraftDTO }
+   * */
 
   private Response update(String author, String uuid, DraftDTO body) {
     try {
@@ -107,6 +137,14 @@ public class DraftsService {
     }
   }
 
+  /**
+   * Сохранить черновик по UUID.
+   * Это публичный метод, который вызывает уже создание, либо обновление черновика.
+   *
+   * @param uuid { String }
+   * @param body { DraftDTO }
+   * */
+
   public Response save(String Token, String uuid, DraftDTO body) {
     try {
       String author = this.auth.getUserByToken(Token);
@@ -118,6 +156,12 @@ public class DraftsService {
       throw new RuntimeException(err);
     }
   }
+
+  /**
+   * Удалить черновик.
+   *
+   * @param uuid { String }
+   * */
 
   public Response delete(String Token, String uuid) {
     try {
