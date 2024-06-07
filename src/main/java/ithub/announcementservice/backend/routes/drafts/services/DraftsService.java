@@ -6,6 +6,7 @@ import ithub.announcementservice.backend.core.domain.models.entities.Announcemen
 import ithub.announcementservice.backend.core.domain.repositories.AnnouncementRepository;
 import ithub.announcementservice.backend.core.models.response.types.Response;
 import ithub.announcementservice.backend.core.models.response.types.ResponseData;
+import ithub.announcementservice.backend.routes.auth.RestClientForAuth;
 import ithub.announcementservice.backend.routes.drafts.models.DraftDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -25,10 +26,12 @@ import java.util.UUID;
 @Service
 public class DraftsService {
   private final AnnouncementRepository repository;
+  private final RestClientForAuth auth;
   private final Mapper mapper;
 
-  public DraftsService(final AnnouncementRepository repository, final Mapper mapper) {
+  public DraftsService(final AnnouncementRepository repository, final RestClientForAuth auth, final Mapper mapper) {
     this.repository = repository;
+    this.auth = auth;
     this.mapper = mapper;
   }
 
@@ -36,12 +39,12 @@ public class DraftsService {
    * Получить все черновики.
    * */
 
-  public Response findAll() {
+  public Response findAll(String Token) {
     try {
-      return new ResponseData<List<Announcement>>(
+      return new ResponseData<>(
         HttpStatus.OK.value(),
         "Список получен.",
-        this.repository.findByStatus(AnnouncementStatus.DRAFT)
+        this.repository.findByAuthorIdAndStatus(auth.getUserByToken(Token),AnnouncementStatus.DRAFT)
       );
     } catch (Exception err) {
       throw new RuntimeException(err);
@@ -54,16 +57,23 @@ public class DraftsService {
    * @param uuid { String }
    * */
 
-  public Response findByUuid(String uuid) {
+  public Response findByUuid(String Token, String uuid) {
     try {
-      Optional<Announcement> current = this.repository.findByStatusAndUuid(AnnouncementStatus.DRAFT, UUID.fromString(uuid));
+      String author = auth.getUserByToken(Token);
+      Optional<Announcement> current = this.repository.findByAuthorIdAndStatusAndUuid(
+        author,
+        AnnouncementStatus.DRAFT,
+        UUID.fromString(uuid));
 
       if (current.isEmpty()) {
         return new Response(HttpStatus.NOT_FOUND.value(), "Черновик не найден.");
       }
 
-      return new ResponseData<Announcement>(HttpStatus.OK.value(), "Черновик получен.", current.get());
+      if (author.equals(current.get().getAuthorId())){
+        return new ResponseData<Announcement>(HttpStatus.OK.value(), "Черновик получен.", current.get());
+      }
 
+      return new Response(HttpStatus.UNAUTHORIZED.value(),"Черновик не этого пользователя");
     } catch (Exception err) {
       throw new RuntimeException(err);
     }
@@ -75,7 +85,8 @@ public class DraftsService {
    * @param body { DraftDTO }
    * */
 
-  private Announcement create(DraftDTO body) {
+  private Announcement create(String author,DraftDTO body) {
+
     try {
       Optional<Announcement> current = Optional.ofNullable(this.mapper.getMapper().map(body, Announcement.class));
 
@@ -85,6 +96,7 @@ public class DraftsService {
 
       current.get().setDateTime(ZonedDateTime.now(ZoneOffset.UTC));
       current.get().setStatus(AnnouncementStatus.DRAFT);
+      current.get().setAuthorId(author);
 
       return this.repository.save(current.get());
     } catch (Exception err) {
@@ -99,19 +111,27 @@ public class DraftsService {
    * @param body { DraftDTO }
    * */
 
-  private Announcement update(String uuid, DraftDTO body) {
+  private Response update(String author, String uuid, DraftDTO body) {
     try {
-      Optional<Announcement> current = this.repository.findByStatusAndUuid(AnnouncementStatus.DRAFT, UUID.fromString(uuid));
+      Optional<Announcement> current = this.repository.findByAuthorIdAndStatusAndUuid(
+        author,
+        AnnouncementStatus.DRAFT,
+        UUID.fromString(uuid));
 
       if (current.isEmpty()) {
         return null;
+      }
+
+      if (!author.equals(current.get().getAuthorId())){
+        return new Response(HttpStatus.UNAUTHORIZED.value(),"Черновик не этого пользователя");
       }
 
       current.get().setTitle(body.getTitle());
       current.get().setContent(body.getContent());
       current.get().setDateTime(ZonedDateTime.now(ZoneOffset.UTC));
 
-      return this.repository.save(current.get());
+      this.repository.save(current.get());
+      return new Response(HttpStatus.OK.value(), "Успешно сохранен");
     } catch (Exception err) {
       throw new RuntimeException(err);
     }
@@ -125,11 +145,13 @@ public class DraftsService {
    * @param body { DraftDTO }
    * */
 
-  public Response save(String uuid, DraftDTO body) {
+  public Response save(String Token, String uuid, DraftDTO body) {
     try {
-      if (uuid != null)
-        return new ResponseData<Announcement>(HttpStatus.ACCEPTED.value(), "Черновик изменен.", this.update(uuid, body));
-      return new ResponseData<Announcement>(HttpStatus.CREATED.value(), "Черновик создан.", this.create(body));
+      String author = this.auth.getUserByToken(Token);
+      if (uuid != null) {
+        return this.update(author,uuid, body);
+      }
+      return new ResponseData<Announcement>(HttpStatus.CREATED.value(), "Черновик создан.", this.create(author,body));
     } catch (Exception err) {
       throw new RuntimeException(err);
     }
@@ -141,16 +163,23 @@ public class DraftsService {
    * @param uuid { String }
    * */
 
-  public Response delete(String uuid) {
+  public Response delete(String Token, String uuid) {
     try {
-      Optional<Announcement> current = this.repository.findByStatusAndUuid(AnnouncementStatus.DRAFT, UUID.fromString(uuid));
+      String author = auth.getUserByToken(Token);
+      Optional<Announcement> current = this.repository.findByAuthorIdAndStatusAndUuid(
+        author,
+        AnnouncementStatus.DRAFT,
+        UUID.fromString(uuid));
 
       if (current.isEmpty()) {
         return new Response(HttpStatus.NOT_FOUND.value(), "Черновик ненайден.");
       }
 
-      current.get().setStatus(AnnouncementStatus.ARCHIVE);
+      if (!author.equals(current.get().getAuthorId())){
+        return new Response(HttpStatus.UNAUTHORIZED.value(),"Черновик не этого пользователя");
+      }
 
+      current.get().setStatus(AnnouncementStatus.ARCHIVE);
       this.repository.save(current.get());
 
       return new Response(HttpStatus.I_AM_A_TEAPOT.value(), "Удален.");

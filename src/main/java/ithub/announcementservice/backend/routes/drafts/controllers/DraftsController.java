@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import ithub.announcementservice.backend.core.models.response.types.Response;
 import ithub.announcementservice.backend.routes.drafts.services.DraftsService;
 import ithub.announcementservice.backend.routes.drafts.models.DraftDTO;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Черновики")
@@ -17,22 +18,22 @@ public class DraftsController {
   }
 
   @GetMapping()
-  public Response findAllDrafts() {
-    return this.draftsService.findAll();
+  public Response findAllDrafts(@Validated @RequestHeader String token) {
+    return this.draftsService.findAll(token);
   }
 
   @GetMapping("{uuid}")
-  public Response findDraftByUuid(@PathVariable String uuid) {
-    return this.draftsService.findByUuid(uuid);
+  public Response findDraftByUuid(@Validated @RequestHeader String token ,@PathVariable String uuid) {
+    return this.draftsService.findByUuid(token, uuid);
   }
 
   @PostMapping("/save")
-  public Response saveDraftByUUID(@RequestParam(required = false) String uuid, @RequestBody DraftDTO body) {
-    return this.draftsService.save(uuid, body);
+  public Response saveDraftByUUID(@Validated @RequestHeader String token , @RequestParam(required = false) String uuid, @RequestBody DraftDTO body) {
+    return this.draftsService.save(token, uuid, body);
   }
 
   @DeleteMapping("/delete/{uuid}")
-  public Response deleteDraftByUUID(@PathVariable String uuid) {
-    return this.draftsService.delete(uuid);
+  public Response deleteDraftByUUID(@Validated @RequestHeader String token ,@PathVariable String uuid) {
+    return this.draftsService.delete(token, uuid);
   }
 }
