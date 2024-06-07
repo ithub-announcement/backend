@@ -92,6 +92,32 @@ public class TagsService {
   }
 
   /**
+   * Изменить категорию.
+   *
+   * @param id { Long }
+   * @param body { TagDTO }
+   * */
+
+  public Response updateById(Long id, @Valid TagDTO body) {
+    try {
+      Optional<TagEntity> existingTag = this.repository.findById(id);
+
+      if (existingTag.isEmpty()) {
+        return new Response(HttpStatus.NOT_FOUND.value(), "Нету");
+      }
+
+      TagEntity tagEntity = existingTag.get();
+      this.mapper.getMapper().map(body, tagEntity);
+      TagEntity updatedTag = this.repository.save(tagEntity);
+
+      return new ResponseData<>(HttpStatus.OK.value(), "Tag изменен", updatedTag);
+    } catch (Exception err) {
+      throw new RuntimeException("ничего не изменилось" + err.getMessage(), err);
+    }
+  }
+
+
+  /**
    * Получить список категорий по ID.
    *
    * @param ids { Long[] }
