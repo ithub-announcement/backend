@@ -17,6 +17,7 @@ import java.util.Optional;
  * ## Сервис категорий.
  *
  * @author Чехонадских Дмитрий
+ * @author Таранов Владислав
  * */
 
 @Service
@@ -112,7 +113,7 @@ public class TagsService {
 
       return new ResponseData<>(HttpStatus.OK.value(), "Tag изменен", updatedTag);
     } catch (Exception err) {
-      throw new RuntimeException("ничего не изменилось" + err.getMessage(), err);
+      throw new RuntimeException(err);
     }
   }
 
@@ -126,7 +127,7 @@ public class TagsService {
   public List<TagEntity> findByIds(List<Long> ids) {
     try {
       return this.repository.findAllById(ids);
-    }catch (Exception err){
+    } catch (Exception err){
       throw new RuntimeException(err);
     }
   }
