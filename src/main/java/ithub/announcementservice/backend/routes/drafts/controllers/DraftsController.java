@@ -18,22 +18,22 @@ public class DraftsController {
   }
 
   @GetMapping()
-  public Response findAllDrafts(@Validated @RequestHeader String token) {
-    return this.draftsService.findAll(token);
+  public Response findAllDrafts(@Validated @RequestHeader String Authorization) {
+    return this.draftsService.findAll(Authorization);
   }
 
   @GetMapping("{uuid}")
-  public Response findDraftByUuid(@Validated @RequestHeader String token ,@PathVariable String uuid) {
-    return this.draftsService.findByUuid(token, uuid);
+  public Response findDraftByUuid(@Validated @RequestHeader String Authorization ,@PathVariable String uuid) {
+    return this.draftsService.findByUuid(Authorization, uuid);
   }
 
   @PostMapping("/save")
-  public Response saveDraftByUUID(@Validated @RequestHeader String token , @RequestParam(required = false) String uuid, @RequestBody DraftDTO body) {
-    return this.draftsService.save(token, uuid, body);
+  public Response saveDraftByUUID(@Validated @RequestHeader String Authorization , @RequestParam(required = false) String uuid, @RequestBody DraftDTO body) {
+    return this.draftsService.save(Authorization, uuid, body);
   }
 
   @DeleteMapping("/delete/{uuid}")
-  public Response deleteDraftByUUID(@Validated @RequestHeader String token ,@PathVariable String uuid) {
-    return this.draftsService.delete(token, uuid);
+  public Response deleteDraftByUUID(@Validated @RequestHeader String Authorization ,@PathVariable String uuid) {
+    return this.draftsService.delete(Authorization, uuid);
   }
 }
