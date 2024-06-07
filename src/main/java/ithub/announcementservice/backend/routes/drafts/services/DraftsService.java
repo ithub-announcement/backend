@@ -21,6 +21,7 @@ import java.util.UUID;
  * ## Сервис черновиков
  *
  * @author Чехонадских Дмитрий
+ * @author Горелов Дмитрий
  * */
 
 @Service
