@@ -28,6 +28,8 @@ public class Review {
 
   private String reason;
 
+  private String inspector;
+
   @ManyToMany
   private List<TagEntity> tags;
 

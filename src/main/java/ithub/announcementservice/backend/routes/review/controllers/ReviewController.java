@@ -29,14 +29,14 @@ public class ReviewController {
 
   @Operation(summary = "Одобрить заявку")
   @PostMapping("/approve/{uuid}")
-  public Response approveReview(@PathVariable UUID uuid) {
-    return this.reviewService.approveReview(uuid);
+  public Response approveReview(@RequestHeader String Authorization, @PathVariable UUID uuid) {
+    return this.reviewService.approveReview(uuid, Authorization);
   }
 
   @Operation(summary = "Отклонить заявку")
   @PostMapping("/reject/{uuid}")
-  public Response rejectReview(@PathVariable UUID uuid, @RequestBody String comments) {
-    return this.reviewService.rejectReview(uuid, comments);
+  public Response rejectReview(@RequestHeader String Authorization, @PathVariable UUID uuid, @RequestBody String comments) {
+    return this.reviewService.rejectReview(uuid, comments, Authorization);
   }
 
   @Operation(summary = "Получить одну заявку по UUID")

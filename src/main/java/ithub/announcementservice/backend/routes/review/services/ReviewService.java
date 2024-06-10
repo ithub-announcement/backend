@@ -69,12 +69,13 @@ public class ReviewService {
    * @param reason String
    * */
 
-  public Response rejectReview(UUID uuid, String reason) {
+  public Response rejectReview(UUID uuid, String reason, String token) {
     try {
       Review review = this.reviewRepository.findById(uuid).get();
 
       review.setStatusReview(StatusReview.reject);
       review.setReason(reason);
+      review.setInspector(this.auth.getUserByToken(token));
 
       this.reviewRepository.save(review);
       return new Response(HttpStatus.OK.value(), "Успешно отклонена");
@@ -89,7 +90,7 @@ public class ReviewService {
    * @param uuid UUID
    * */
 
-  public Response approveReview(UUID uuid) {
+  public Response approveReview(UUID uuid, String token) {
     try {
       Review review = this.reviewRepository.findById(uuid).get();
 
@@ -97,6 +98,7 @@ public class ReviewService {
         return new Response(HttpStatus.NO_CONTENT.value(), "объявление отклонено");
       }
 
+      review.setInspector(this.auth.getUserByToken(token));
       review.setStatusReview(StatusReview.accept);
       this.reviewRepository.save(review);
 
