@@ -62,4 +62,10 @@ public class ReviewController {
   public Response getCount(){
     return reviewService.getCountOfReview();
   }
+
+  @Operation(summary = "Получить заявки на рассмотрении определенного пользователя")
+  @GetMapping("/reviewByAuthor")
+  public Response getReviewByAuthor(@RequestBody String token){
+    return reviewService.getReviewByAuthor(token);
+  }
 }

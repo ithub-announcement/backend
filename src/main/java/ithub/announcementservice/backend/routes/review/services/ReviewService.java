@@ -1,5 +1,6 @@
 package ithub.announcementservice.backend.routes.review.services;
 
+import ithub.announcementservice.backend.core.api.auth.RestClientForAuth;
 import ithub.announcementservice.backend.core.config.Mapper;
 import ithub.announcementservice.backend.core.domain.models.AnnouncementStatus;
 import ithub.announcementservice.backend.core.domain.models.entities.Announcement;
@@ -14,7 +15,6 @@ import ithub.announcementservice.backend.routes.tags.services.TagsService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -29,12 +29,14 @@ public class ReviewService {
   private final AnnouncementRepository announcementRepository;
   private final ReviewRepository reviewRepository;
   private final TagsService tagsService;
+  private final RestClientForAuth auth;
   private final Mapper mapper;
 
-  public ReviewService(final AnnouncementRepository repository, ReviewRepository reviewRepository, TagsService tagsService, final Mapper mapper) {
+  public ReviewService(final AnnouncementRepository repository, final ReviewRepository reviewRepository, final TagsService tagsService, final RestClientForAuth auth, final Mapper mapper) {
     this.announcementRepository = repository;
     this.reviewRepository = reviewRepository;
     this.tagsService = tagsService;
+    this.auth = auth;
     this.mapper = mapper;
   }
 
@@ -153,6 +155,20 @@ public class ReviewService {
   public Response getCountOfReview(){
     try {
       return new ResponseData(HttpStatus.OK.value(), "Успешно посчитано", reviewRepository.countAllByStatusReview(StatusReview.review));
+    }catch (Exception err){
+      return new Response(HttpStatus.INTERNAL_SERVER_ERROR.value(), err.getMessage());
+    }
+  }
+
+  /**
+   * Получить все заявки на рассмотрения одного пользователя
+   *
+   * @param token String
+   * */
+
+  public Response getReviewByAuthor(String token){
+    try{
+      return new ResponseData(HttpStatus.OK.value(), "Успешно получено", reviewRepository.findAllByAuthorId(auth.getUserByToken(token)));
     }catch (Exception err){
       return new Response(HttpStatus.INTERNAL_SERVER_ERROR.value(), err.getMessage());
     }
