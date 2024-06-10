@@ -1,14 +1,14 @@
 package ithub.announcementservice.backend.routes.review.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import org.springframework.web.bind.annotation.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import ithub.announcementservice.backend.core.models.response.types.Response;
+import ithub.announcementservice.backend.routes.review.models.ReviewAcceptPayload;
 import ithub.announcementservice.backend.routes.review.services.ReviewService;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @Tag(name = "Модерация", description = "Сервис модерации объявлений")
@@ -23,8 +23,8 @@ public class ReviewController {
 
   @Operation(summary = "Принять на модерацию")
   @PostMapping("/send-to-review")
-  public Response acceptReview(@RequestBody UUID uuid, @RequestBody List<Long> tags) {
-    return reviewService.acceptReview(uuid, tags);
+  public Response acceptReview(@RequestBody ReviewAcceptPayload payload) {
+    return reviewService.acceptReview(payload);
   }
 
   @Operation(summary = "Одобрить заявку")
@@ -55,5 +55,11 @@ public class ReviewController {
   @DeleteMapping("/delete/{uuid}")
   public Response deleteReview(@PathVariable UUID uuid) {
     return reviewService.deleteReview(uuid);
+  }
+
+  @Operation(summary = "Получить количество заявок на рассмотрении")
+  @GetMapping("/count")
+  public Response getCount(){
+    return reviewService.getCountOfReview();
   }
 }

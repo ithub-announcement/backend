@@ -1,6 +1,6 @@
-package ithub.announcementservice.backend.routes.auth;
+package ithub.announcementservice.backend.core.api.auth;
 
-import ithub.announcementservice.backend.routes.auth.models.User;
+import ithub.announcementservice.backend.core.api.auth.models.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpEntity;
