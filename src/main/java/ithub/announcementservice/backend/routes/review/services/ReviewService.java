@@ -6,6 +6,7 @@ import ithub.announcementservice.backend.core.domain.models.entities.Announcemen
 import ithub.announcementservice.backend.core.domain.repositories.AnnouncementRepository;
 import ithub.announcementservice.backend.core.models.response.types.Response;
 import ithub.announcementservice.backend.core.models.response.types.ResponseData;
+import ithub.announcementservice.backend.routes.review.models.ReviewAcceptPayload;
 import ithub.announcementservice.backend.routes.review.repositories.ReviewRepository;
 import ithub.announcementservice.backend.routes.review.models.StatusReview;
 import ithub.announcementservice.backend.routes.review.models.Review;
@@ -40,16 +41,18 @@ public class ReviewService {
   /**
    * Принять на модерацию
    *
-   * @param uuid UUID
-   * @param tags List<TagEntity>
+   * @param body
    * */
 
-  public Response acceptReview(UUID uuid, List<Long> tags) {
+  public Response acceptReview(ReviewAcceptPayload body) {
     try {
-      Announcement current = announcementRepository.findByStatusAndUuid(AnnouncementStatus.DRAFT,uuid).get();
-      Review review = Optional.ofNullable(this.mapper.getMapper().map(current, Review.class)).get();
+      System.out.println(body.getUuid());
+      Announcement current = announcementRepository.findByStatusAndUuid(AnnouncementStatus.DRAFT,body.getUuid()).get();
 
-      review.setTags(tagsService.findByIds(tags));
+      Review review = Optional.ofNullable(this.mapper.getMapper().map(current, Review.class)).get();
+      review.setStatusReview(StatusReview.review);
+
+      review.setTags(tagsService.findByIds(body.getTags()));
       reviewRepository.save(review);
 
       return new Response(HttpStatus.OK.value(), "Успешно принят");
@@ -140,6 +143,18 @@ public class ReviewService {
       reviewRepository.deleteById(uuid);
       return new Response((HttpStatus.OK.value()), "успешно отклонено");
     } catch (Exception err) {
+      return new Response(HttpStatus.INTERNAL_SERVER_ERROR.value(), err.getMessage());
+    }
+  }
+
+  /**
+   * Получить количество заявок на рассмотрении
+   * */
+
+  public Response getSumOnModeration(){
+    try {
+      return new ResponseData(HttpStatus.OK.value(), "Успешно посчитано", reviewRepository.countAllByStatusReview(StatusReview.review));
+    }catch (Exception err){
       return new Response(HttpStatus.INTERNAL_SERVER_ERROR.value(), err.getMessage());
     }
   }

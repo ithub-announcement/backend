@@ -29,6 +29,7 @@ public class RestClientForAuth {
         .replaceAll("}", "");
 
       if (validateToken(response)) {
+        System.out.println(response);
         return response;
       } else {
         throw new RuntimeException("Invalid token");
@@ -46,7 +47,9 @@ public class RestClientForAuth {
   }
 
   public String getUserByToken(String token){
-    return request(token, "/user/token").split("data:")[1];
+    String ff = request(token, "/user/token").split("data:")[1];
+    System.out.println(ff);
+    return ff;
   }
 
   public User getRoleAndUserByToken(String token){
