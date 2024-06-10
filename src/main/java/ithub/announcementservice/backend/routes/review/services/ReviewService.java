@@ -41,18 +41,17 @@ public class ReviewService {
   /**
    * Принять на модерацию
    *
-   * @param body
+   * @param Payload
    * */
 
-  public Response acceptReview(ReviewAcceptPayload body) {
+  public Response acceptReview(ReviewAcceptPayload Payload) {
     try {
-      System.out.println(body.getUuid());
-      Announcement current = announcementRepository.findByStatusAndUuid(AnnouncementStatus.DRAFT,body.getUuid()).get();
+      Announcement current = announcementRepository.findByStatusAndUuid(AnnouncementStatus.DRAFT,Payload.getUuid()).get();
 
       Review review = Optional.ofNullable(this.mapper.getMapper().map(current, Review.class)).get();
       review.setStatusReview(StatusReview.review);
 
-      review.setTags(tagsService.findByIds(body.getTags()));
+      review.setTags(tagsService.findByIds(Payload.getTags()));
       reviewRepository.save(review);
 
       return new Response(HttpStatus.OK.value(), "Успешно принят");

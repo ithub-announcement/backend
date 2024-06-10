@@ -7,10 +7,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import ithub.announcementservice.backend.core.models.response.types.Response;
 import ithub.announcementservice.backend.routes.review.models.ReviewAcceptPayload;
 import ithub.announcementservice.backend.routes.review.services.ReviewService;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @Tag(name = "Модерация", description = "Сервис модерации объявлений")
@@ -25,8 +23,8 @@ public class ReviewController {
 
   @Operation(summary = "Принять на модерацию")
   @PostMapping("/send-to-review")
-  public Response acceptReview(@RequestBody ReviewAcceptPayload body) {
-    return reviewService.acceptReview(body);
+  public Response acceptReview(@RequestBody ReviewAcceptPayload Payload) {
+    return reviewService.acceptReview(Payload);
   }
 
   @Operation(summary = "Одобрить заявку")
