@@ -18,54 +18,60 @@ public class ReviewController {
   private final ReviewService reviewService;
 
   public ReviewController(final ReviewService _reviewService) {
-    reviewService = _reviewService;
+    this.reviewService = _reviewService;
   }
 
   @Operation(summary = "Принять на модерацию")
   @PostMapping("/send-to-review")
   public Response acceptReview(@RequestBody ReviewAcceptPayload payload) {
-    return reviewService.acceptReview(payload);
+    return this.reviewService.acceptReview(payload);
   }
 
   @Operation(summary = "Одобрить заявку")
   @PostMapping("/approve/{uuid}")
   public Response approveReview(@PathVariable UUID uuid) {
-    return reviewService.approveReview(uuid);
+    return this.reviewService.approveReview(uuid);
   }
 
   @Operation(summary = "Отклонить заявку")
   @PostMapping("/reject/{uuid}")
   public Response rejectReview(@PathVariable UUID uuid, @RequestBody String comments) {
-    return reviewService.rejectReview(uuid, comments);
+    return this.reviewService.rejectReview(uuid, comments);
   }
 
   @Operation(summary = "Получить одну заявку по UUID")
   @GetMapping("/{uuid}")
   public Response getReview(@PathVariable UUID uuid) {
-    return reviewService.getReview(uuid);
+    return this.reviewService.getReview(uuid);
   }
 
   @Operation(summary = "Получить все заявки")
   @GetMapping()
   public Response getReviews() {
-    return reviewService.getReviews();
+    return this.reviewService.getReviews();
   }
 
   @Operation(summary = "Удалить заявку")
   @DeleteMapping("/delete/{uuid}")
   public Response deleteReview(@PathVariable UUID uuid) {
-    return reviewService.deleteReview(uuid);
+    return this.reviewService.deleteReview(uuid);
   }
 
   @Operation(summary = "Получить количество заявок на рассмотрении")
   @GetMapping("/count")
   public Response getCount(){
-    return reviewService.getCountOfReview();
+    return this.reviewService.getCountOfReview();
   }
 
   @Operation(summary = "Получить заявки на рассмотрении определенного пользователя")
-  @GetMapping("/reviewByAuthor")
+  @GetMapping("/author/all")
   public Response getReviewByAuthor(@RequestBody String token){
-    return reviewService.getReviewByAuthor(token);
+    return this.reviewService.getReviewByAuthor(token);
+  }
+
+  @Operation(summary = "Получить количество заявок на рассмотрении у пользоваетеля")
+  @GetMapping("/author/count")
+  public Response getCountByAuthor(@RequestBody String token){
+    return this.reviewService.getCountOfReviewByAuthor(token);
   }
 }

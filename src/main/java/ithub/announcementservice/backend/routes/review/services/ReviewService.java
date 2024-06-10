@@ -48,13 +48,13 @@ public class ReviewService {
 
   public Response acceptReview(ReviewAcceptPayload payload) {
     try {
-      Announcement current = announcementRepository.findByStatusAndUuid(AnnouncementStatus.DRAFT,payload.getUuid()).get();
+      Announcement current = this.announcementRepository.findByStatusAndUuid(AnnouncementStatus.DRAFT,payload.getUuid()).get();
 
       Review review = Optional.ofNullable(this.mapper.getMapper().map(current, Review.class)).get();
       review.setStatusReview(StatusReview.review);
 
       review.setTags(tagsService.findByIds(payload.getTags()));
-      reviewRepository.save(review);
+      this.reviewRepository.save(review);
 
       return new Response(HttpStatus.OK.value(), "Успешно принят");
     } catch (Exception err) {
@@ -71,12 +71,12 @@ public class ReviewService {
 
   public Response rejectReview(UUID uuid, String reason) {
     try {
-      Review review = reviewRepository.findById(uuid).get();
+      Review review = this.reviewRepository.findById(uuid).get();
 
       review.setStatusReview(StatusReview.reject);
       review.setReason(reason);
 
-      reviewRepository.save(review);
+      this.reviewRepository.save(review);
       return new Response(HttpStatus.OK.value(), "Успешно отклонена");
     } catch (Exception err) {
       return new Response(HttpStatus.INTERNAL_SERVER_ERROR.value(), err.getMessage());
@@ -91,14 +91,14 @@ public class ReviewService {
 
   public Response approveReview(UUID uuid) {
     try {
-      Review review = reviewRepository.findById(uuid).get();
+      Review review = this.reviewRepository.findById(uuid).get();
 
       if (review.getStatusReview() == StatusReview.reject) {
         return new Response(HttpStatus.NO_CONTENT.value(), "объявление отклонено");
       }
 
       review.setStatusReview(StatusReview.accept);
-      reviewRepository.save(review);
+      this.reviewRepository.save(review);
 
       return new Response(HttpStatus.OK.value(), "Успешно одобрена");
     } catch (Exception err) {
@@ -114,7 +114,7 @@ public class ReviewService {
 
   public Response getReview(UUID uuid) {
     try {
-      Optional<Review> current = reviewRepository.findById(uuid);
+      Optional<Review> current = this.reviewRepository.findById(uuid);
       return new ResponseData<>(HttpStatus.OK.value(), "Успешно получено", current.get());
     } catch (Exception err) {
       return new Response(HttpStatus.INTERNAL_SERVER_ERROR.value(), err.getMessage());
@@ -127,7 +127,7 @@ public class ReviewService {
 
   public Response getReviews() {
     try {
-      return new ResponseData<>(HttpStatus.OK.value(), "Успешно получено", reviewRepository.findAll());
+      return new ResponseData<>(HttpStatus.OK.value(), "Успешно получено", this.reviewRepository.findAll());
     } catch (Exception err) {
       return new Response(HttpStatus.INTERNAL_SERVER_ERROR.value(), err.getMessage());
     }
@@ -141,7 +141,7 @@ public class ReviewService {
 
   public Response deleteReview(UUID uuid) {
     try {
-      reviewRepository.deleteById(uuid);
+      this.reviewRepository.deleteById(uuid);
       return new Response((HttpStatus.OK.value()), "успешно отклонено");
     } catch (Exception err) {
       return new Response(HttpStatus.INTERNAL_SERVER_ERROR.value(), err.getMessage());
@@ -154,7 +154,7 @@ public class ReviewService {
 
   public Response getCountOfReview(){
     try {
-      return new ResponseData(HttpStatus.OK.value(), "Успешно посчитано", reviewRepository.countAllByStatusReview(StatusReview.review));
+      return new Response(HttpStatus.OK.value(), this.reviewRepository.countAllByStatusReview(StatusReview.review).toString());
     }catch (Exception err){
       return new Response(HttpStatus.INTERNAL_SERVER_ERROR.value(), err.getMessage());
     }
@@ -168,7 +168,21 @@ public class ReviewService {
 
   public Response getReviewByAuthor(String token){
     try{
-      return new ResponseData(HttpStatus.OK.value(), "Успешно получено", reviewRepository.findAllByAuthorId(auth.getUserByToken(token)));
+      return new ResponseData(HttpStatus.OK.value(), "Успешно получено", reviewRepository.findAllByAuthorId(this.auth.getUserByToken(token)));
+    }catch (Exception err){
+      return new Response(HttpStatus.INTERNAL_SERVER_ERROR.value(), err.getMessage());
+    }
+  }
+
+  /**
+   * Получить все заявки на рассмотрения одного пользователя
+   *
+   * @param token String
+   * */
+
+  public Response getCountOfReviewByAuthor(String token){
+    try {
+      return new Response(HttpStatus.OK.value(),this.reviewRepository.countAllByAuthorIdAndStatusReview(this.auth.getUserByToken(token), StatusReview.review).toString());
     }catch (Exception err){
       return new Response(HttpStatus.INTERNAL_SERVER_ERROR.value(), err.getMessage());
     }

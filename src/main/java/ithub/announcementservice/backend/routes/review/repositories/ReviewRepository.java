@@ -12,4 +12,6 @@ public interface ReviewRepository extends JpaRepository<Review, UUID> {
   Long countAllByStatusReview(StatusReview statusReview);
 
   List<Review> findAllByAuthorId(String authorId);
+
+  Long countAllByAuthorIdAndStatusReview(String authorId, StatusReview statusReview);
 }
