@@ -1,6 +1,6 @@
-package ithub.announcementservice.backend.routes.auth;
+package ithub.announcementservice.backend.core.api.auth;
 
-import ithub.announcementservice.backend.routes.auth.models.User;
+import ithub.announcementservice.backend.core.api.auth.models.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpEntity;
@@ -29,7 +29,6 @@ public class RestClientForAuth {
         .replaceAll("}", "");
 
       if (validateToken(response)) {
-        System.out.println(response);
         return response;
       } else {
         throw new RuntimeException("Invalid token");
@@ -47,9 +46,7 @@ public class RestClientForAuth {
   }
 
   public String getUserByToken(String token){
-    String ff = request(token, "/user/token").split("data:")[1];
-    System.out.println(ff);
-    return ff;
+    return request(token, "/user/token").split("data:")[1];
   }
 
   public User getRoleAndUserByToken(String token){

@@ -1,4 +1,4 @@
-package ithub.announcementservice.backend.routes.auth.models;
+package ithub.announcementservice.backend.core.api.auth.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

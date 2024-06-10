@@ -23,8 +23,8 @@ public class ReviewController {
 
   @Operation(summary = "Принять на модерацию")
   @PostMapping("/send-to-review")
-  public Response acceptReview(@RequestBody ReviewAcceptPayload Payload) {
-    return reviewService.acceptReview(Payload);
+  public Response acceptReview(@RequestBody ReviewAcceptPayload payload) {
+    return reviewService.acceptReview(payload);
   }
 
   @Operation(summary = "Одобрить заявку")
@@ -60,6 +60,6 @@ public class ReviewController {
   @Operation(summary = "Получить количество заявок на рассмотрении")
   @GetMapping("/count")
   public Response getCount(){
-    return reviewService.getSumOnModeration();
+    return reviewService.getCountOfReview();
   }
 }

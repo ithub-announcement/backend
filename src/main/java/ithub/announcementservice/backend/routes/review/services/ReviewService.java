@@ -41,17 +41,17 @@ public class ReviewService {
   /**
    * Принять на модерацию
    *
-   * @param Payload
+   * @param payload
    * */
 
-  public Response acceptReview(ReviewAcceptPayload Payload) {
+  public Response acceptReview(ReviewAcceptPayload payload) {
     try {
-      Announcement current = announcementRepository.findByStatusAndUuid(AnnouncementStatus.DRAFT,Payload.getUuid()).get();
+      Announcement current = announcementRepository.findByStatusAndUuid(AnnouncementStatus.DRAFT,payload.getUuid()).get();
 
       Review review = Optional.ofNullable(this.mapper.getMapper().map(current, Review.class)).get();
       review.setStatusReview(StatusReview.review);
 
-      review.setTags(tagsService.findByIds(Payload.getTags()));
+      review.setTags(tagsService.findByIds(payload.getTags()));
       reviewRepository.save(review);
 
       return new Response(HttpStatus.OK.value(), "Успешно принят");
@@ -150,7 +150,7 @@ public class ReviewService {
    * Получить количество заявок на рассмотрении
    * */
 
-  public Response getSumOnModeration(){
+  public Response getCountOfReview(){
     try {
       return new ResponseData(HttpStatus.OK.value(), "Успешно посчитано", reviewRepository.countAllByStatusReview(StatusReview.review));
     }catch (Exception err){
