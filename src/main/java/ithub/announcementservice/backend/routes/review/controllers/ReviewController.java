@@ -65,13 +65,13 @@ public class ReviewController {
 
   @Operation(summary = "Получить заявки на рассмотрении определенного пользователя")
   @GetMapping("/author/all")
-  public Response getReviewByAuthor(@RequestBody String token){
-    return this.reviewService.getReviewByAuthor(token);
+  public Response getReviewByAuthor(@RequestHeader String Authorization){
+    return this.reviewService.getReviewByAuthor(Authorization);
   }
 
   @Operation(summary = "Получить количество заявок на рассмотрении у пользоваетеля")
   @GetMapping("/author/count")
-  public Response getCountByAuthor(@RequestBody String token){
-    return this.reviewService.getCountOfReviewByAuthor(token);
+  public Response getCountByAuthor(@RequestHeader String Authorization){
+    return this.reviewService.getCountOfReviewByAuthor(Authorization);
   }
 }

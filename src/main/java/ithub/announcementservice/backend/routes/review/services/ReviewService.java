@@ -154,7 +154,7 @@ public class ReviewService {
 
   public Response getCountOfReview(){
     try {
-      return new Response(HttpStatus.OK.value(), this.reviewRepository.countAllByStatusReview(StatusReview.review).toString());
+      return new ResponseData(HttpStatus.OK.value(), "Успешно посчитано", this.reviewRepository.countAllByStatusReview(StatusReview.review).toString());
     }catch (Exception err){
       return new Response(HttpStatus.INTERNAL_SERVER_ERROR.value(), err.getMessage());
     }
@@ -182,7 +182,7 @@ public class ReviewService {
 
   public Response getCountOfReviewByAuthor(String token){
     try {
-      return new Response(HttpStatus.OK.value(),this.reviewRepository.countAllByAuthorIdAndStatusReview(this.auth.getUserByToken(token), StatusReview.review).toString());
+      return new ResponseData(HttpStatus.OK.value(), "Успешно посчитано", this.reviewRepository.countAllByAuthorIdAndStatusReview(this.auth.getUserByToken(token), StatusReview.review));
     }catch (Exception err){
       return new Response(HttpStatus.INTERNAL_SERVER_ERROR.value(), err.getMessage());
     }
