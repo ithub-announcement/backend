@@ -8,6 +8,7 @@ import ithub.announcementservice.backend.core.models.response.types.Response;
 import ithub.announcementservice.backend.core.models.response.types.ResponseData;
 import ithub.announcementservice.backend.core.api.auth.RestClientForAuth;
 import ithub.announcementservice.backend.routes.drafts.models.DraftDTO;
+import ithub.announcementservice.backend.routes.review.services.ReviewService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -27,11 +28,13 @@ import java.util.UUID;
 public class DraftsService {
   private final AnnouncementRepository repository;
   private final RestClientForAuth auth;
+  private final ReviewService reviewService;
   private final Mapper mapper;
 
-  public DraftsService(final AnnouncementRepository repository, final RestClientForAuth auth, final Mapper mapper) {
+  public DraftsService(final AnnouncementRepository repository, final RestClientForAuth auth, final ReviewService reviewService, final Mapper mapper) {
     this.repository = repository;
     this.auth = auth;
+    this.reviewService = reviewService;
     this.mapper = mapper;
   }
 
@@ -130,6 +133,10 @@ public class DraftsService {
       current.get().setContent(body.getContent());
       current.get().setDateTime(ZonedDateTime.now(ZoneOffset.UTC));
 
+      if (this.reviewService.getReview(current.get().getUuid()) != null){
+        this.reviewService.deleteReview(current.get().getUuid());
+      }
+
       this.repository.save(current.get());
       return new Response(HttpStatus.OK.value(), "Успешно сохранен");
     } catch (Exception err) {
@@ -175,8 +182,12 @@ public class DraftsService {
         return new Response(HttpStatus.NOT_FOUND.value(), "Черновик ненайден.");
       }
 
-      if (!author.equals(current.get().getAuthorId())){
-        return new Response(HttpStatus.UNAUTHORIZED.value(),"Черновик не этого пользователя");
+      if (!author.equals(current.get().getAuthorId())) {
+        return new Response(HttpStatus.UNAUTHORIZED.value(), "Черновик не этого пользователя");
+      }
+
+      if (this.reviewService.getReview(current.get().getUuid()) != null){
+        this.reviewService.deleteReview(current.get().getUuid());
       }
 
       current.get().setStatus(AnnouncementStatus.ARCHIVE);
