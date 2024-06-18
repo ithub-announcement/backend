@@ -1,10 +1,13 @@
 package ithub.announcementservice.backend.routes.announcements.services;
 
+import ithub.announcementservice.backend.core.api.auth.RestClientForAuth;
+import ithub.announcementservice.backend.core.api.auth.models.User;
 import ithub.announcementservice.backend.core.domain.models.AnnouncementStatus;
 import ithub.announcementservice.backend.core.domain.models.entities.Announcement;
 import ithub.announcementservice.backend.core.domain.repositories.AnnouncementRepository;
 import ithub.announcementservice.backend.core.models.response.types.Response;
 import ithub.announcementservice.backend.core.models.response.types.ResponseData;
+import ithub.announcementservice.backend.routes.tags.models.TagEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -17,6 +20,7 @@ import java.util.UUID;
  * ## Сервис объявлений.
  *
  * @author Минаков Эдуард
+ * @author Горелов Дмитрий
  * */
 
 @Slf4j
@@ -24,8 +28,53 @@ import java.util.UUID;
 public class AnnouncementService {
   private final AnnouncementRepository repository;
 
-  public AnnouncementService(final AnnouncementRepository repository) {
+  private final RestClientForAuth auth;
+
+  public AnnouncementService(final AnnouncementRepository repository, RestClientForAuth auth) {
     this.repository = repository;
+    this.auth = auth;
+  }
+
+  /**
+   * Получить объявления по тэгам
+   * */
+
+  public Response findByTags(List<TagEntity> tags){
+    try {
+      if (tags.isEmpty()){
+        return new Response(HttpStatus.BAD_REQUEST.value(), "Лист тэгов пустой");
+      }
+      return new ResponseData<>(HttpStatus.OK.value(), "Успешно получено", repository.findAnnouncementByStatusAndTagsIn(AnnouncementStatus.PUBLIC, tags));
+    }catch (Exception err){
+      return new Response(HttpStatus.INTERNAL_SERVER_ERROR.value(), err.getMessage());
+    }
+  }
+
+  /**
+   * Отправить на публикацию
+   * */
+
+  public Response sendToPublication(UUID uuid, String token){
+    try{
+      User user = auth.getRoleAndUserByToken(token);
+
+      if (!user.getRole().equals("ADMIN") && !user.getRole().equals("TEACHER")){
+        return new Response(HttpStatus.NO_CONTENT.value(), "Не может отправлять на публикацию");
+      }
+
+      Announcement current = repository.findByAuthorIdAndStatusAndUuid(user.getUid(), AnnouncementStatus.DRAFT,uuid).get();
+
+      if (current.getStatus() != AnnouncementStatus.DRAFT){
+        return new Response(HttpStatus.NO_CONTENT.value(), "Объявление находится не в черновиках");
+      }
+
+      current.setStatus(AnnouncementStatus.PUBLIC);
+      repository.save(current);
+
+      return new Response(HttpStatus.OK.value(), "Успешно добавлено");
+    }catch (Exception err){
+      return new Response(HttpStatus.INTERNAL_SERVER_ERROR.value(), err.getMessage());
+    }
   }
 
   /**
@@ -34,7 +83,7 @@ public class AnnouncementService {
 
   public Response findAll() {
     try {
-      return new ResponseData<List<Announcement>>(HttpStatus.OK.value(), "found", this.repository.findByStatus(AnnouncementStatus.PUBLIC));
+      return new ResponseData<>(HttpStatus.OK.value(), "found", this.repository.findByStatus(AnnouncementStatus.PUBLIC));
     } catch (Exception err) {
       return new Response(HttpStatus.INTERNAL_SERVER_ERROR.value(), err.getMessage());
     }
@@ -54,7 +103,7 @@ public class AnnouncementService {
         return new Response(HttpStatus.NOT_FOUND.value(), "not found");
       }
 
-      return new ResponseData<Announcement>(HttpStatus.OK.value(), "found", announcement.get());
+      return new ResponseData<>(HttpStatus.OK.value(), "found", announcement.get());
     } catch (Exception err) {
       return new Response(HttpStatus.INTERNAL_SERVER_ERROR.value(), "error: " + err.getMessage());
     }
