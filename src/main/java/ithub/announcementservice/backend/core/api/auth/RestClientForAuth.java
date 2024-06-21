@@ -24,15 +24,10 @@ public class RestClientForAuth {
       headers.setContentType(MediaType.APPLICATION_JSON);
 
       HttpEntity<String> request = new HttpEntity<>(token, headers);
-      String response = restTemplate.postForObject(url + param, request, String.class)
+      return restTemplate.postForObject(url + param, request, String.class)
         .replaceAll("\"", "")
         .replaceAll("}", "");
 
-      if (validateToken(response)) {
-        return response;
-      } else {
-        throw new RuntimeException("Invalid token");
-      }
     }catch (Exception err){
       throw new RuntimeException(err);
     }

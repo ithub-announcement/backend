@@ -7,6 +7,7 @@ import ithub.announcementservice.backend.core.domain.models.entities.Announcemen
 import ithub.announcementservice.backend.core.domain.repositories.AnnouncementRepository;
 import ithub.announcementservice.backend.core.models.response.types.Response;
 import ithub.announcementservice.backend.core.models.response.types.ResponseData;
+import ithub.announcementservice.backend.routes.review.services.ReviewService;
 import ithub.announcementservice.backend.routes.tags.models.TagEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -30,9 +31,12 @@ public class AnnouncementService {
 
   private final RestClientForAuth auth;
 
-  public AnnouncementService(final AnnouncementRepository repository, RestClientForAuth auth) {
+  private final ReviewService reviewService;
+
+  public AnnouncementService(final AnnouncementRepository repository, RestClientForAuth auth, ReviewService reviewService) {
     this.repository = repository;
     this.auth = auth;
+    this.reviewService = reviewService;
   }
 
   /**
@@ -67,6 +71,8 @@ public class AnnouncementService {
       if (current.getStatus() != AnnouncementStatus.DRAFT){
         return new Response(HttpStatus.NO_CONTENT.value(), "Объявление находится не в черновиках");
       }
+
+      reviewService.approveReview(uuid, token);
 
       current.setStatus(AnnouncementStatus.PUBLIC);
       repository.save(current);
