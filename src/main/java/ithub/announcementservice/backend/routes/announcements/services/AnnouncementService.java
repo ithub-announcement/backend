@@ -85,7 +85,7 @@ public class AnnouncementService {
 
   public Response findAll() {
     try {
-      return new ResponseData<>(HttpStatus.OK.value(), "found", this.repository.findAllByStatusOrderByDateTimeAsc(AnnouncementStatus.PUBLIC));
+      return new ResponseData<>(HttpStatus.OK.value(), "found", this.repository.findAllByStatusOrderByDateTimeDesc(AnnouncementStatus.PUBLIC));
     } catch (Exception err) {
       return new Response(HttpStatus.INTERNAL_SERVER_ERROR.value(), err.getMessage());
     }

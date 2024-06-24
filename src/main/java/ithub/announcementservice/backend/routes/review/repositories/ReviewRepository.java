@@ -2,6 +2,7 @@ package ithub.announcementservice.backend.routes.review.repositories;
 
 import ithub.announcementservice.backend.routes.review.models.Review;
 import ithub.announcementservice.backend.routes.review.models.StatusReview;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -15,5 +16,5 @@ public interface ReviewRepository extends JpaRepository<Review, UUID> {
   List<Review> findAllByAuthorId(String authorId);
 
   Long countAllByAuthorIdAndStatusReview(String authorId, StatusReview statusReview);
-  List<Review> findReviewsByStatusReviewOrderByDateTimeAsc(StatusReview statusReview);
+  List<Review> findAllByOrderByDateTimeDesc();
 }

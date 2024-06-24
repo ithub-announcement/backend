@@ -126,7 +126,7 @@ public class ReviewService {
 
   public Response getReviews() {
     try {
-      return new ResponseData<>(HttpStatus.OK.value(), "Успешно получено", this.reviewRepository.findReviewsByStatusReviewOrderByDateTimeAsc(StatusReview.review));
+      return new ResponseData<>(HttpStatus.OK.value(), "Успешно получено", this.reviewRepository.findAllByOrderByDateTimeDesc());
     } catch (Exception err) {
       return new Response(HttpStatus.INTERNAL_SERVER_ERROR.value(), err.getMessage());
     }
