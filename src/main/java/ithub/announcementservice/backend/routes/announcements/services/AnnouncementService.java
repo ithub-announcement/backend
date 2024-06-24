@@ -9,6 +9,7 @@ import ithub.announcementservice.backend.core.models.response.types.Response;
 import ithub.announcementservice.backend.core.models.response.types.ResponseData;
 import ithub.announcementservice.backend.routes.review.services.ReviewService;
 import ithub.announcementservice.backend.routes.tags.models.TagEntity;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -26,18 +27,13 @@ import java.util.UUID;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class AnnouncementService {
   private final AnnouncementRepository repository;
 
   private final RestClientForAuth auth;
 
   private final ReviewService reviewService;
-
-  public AnnouncementService(final AnnouncementRepository repository, RestClientForAuth auth, ReviewService reviewService) {
-    this.repository = repository;
-    this.auth = auth;
-    this.reviewService = reviewService;
-  }
 
   /**
    * Получить объявления по тэгам
@@ -89,7 +85,7 @@ public class AnnouncementService {
 
   public Response findAll() {
     try {
-      return new ResponseData<>(HttpStatus.OK.value(), "found", this.repository.findByStatus(AnnouncementStatus.PUBLIC));
+      return new ResponseData<>(HttpStatus.OK.value(), "found", this.repository.findAllByStatusOrderByDateTimeAsc(AnnouncementStatus.PUBLIC));
     } catch (Exception err) {
       return new Response(HttpStatus.INTERNAL_SERVER_ERROR.value(), err.getMessage());
     }

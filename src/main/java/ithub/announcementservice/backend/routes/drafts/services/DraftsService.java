@@ -47,7 +47,7 @@ public class DraftsService {
       return new ResponseData<>(
         HttpStatus.OK.value(),
         "Список получен.",
-        this.repository.findByAuthorIdAndStatus(auth.getUserByToken(Token),AnnouncementStatus.DRAFT)
+        this.repository.findAllByAuthorIdAndStatusOrderByDateTimeAsc(auth.getUserByToken(Token),AnnouncementStatus.DRAFT)
       );
     } catch (Exception err) {
       throw new RuntimeException(err);
