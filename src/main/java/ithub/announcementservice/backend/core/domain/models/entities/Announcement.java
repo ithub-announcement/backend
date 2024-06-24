@@ -1,11 +1,13 @@
 package ithub.announcementservice.backend.core.domain.models.entities;
 
 import ithub.announcementservice.backend.core.domain.models.AnnouncementStatus;
+import ithub.announcementservice.backend.routes.tags.models.TagEntity;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -29,4 +31,7 @@ public class Announcement {
   private ZonedDateTime dateTime;
 
   private AnnouncementStatus status;
+
+  @ManyToMany
+  private List<TagEntity> tags;
 }

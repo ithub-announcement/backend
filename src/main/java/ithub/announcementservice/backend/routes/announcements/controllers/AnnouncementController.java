@@ -4,8 +4,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import ithub.announcementservice.backend.core.models.response.types.Response;
 import ithub.announcementservice.backend.routes.announcements.services.AnnouncementService;
+import ithub.announcementservice.backend.routes.tags.models.TagEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @Tag(name = "Обьявления")
@@ -16,6 +18,18 @@ public class AnnouncementController {
 
   public AnnouncementController(final AnnouncementService announcementService) {
     this.announcementService = announcementService;
+  }
+
+  @PostMapping("/toPublic")
+  @Operation(summary = "Отправить в публикацию")
+  public Response sendToPublic(@RequestHeader String token, @RequestBody UUID uuid){
+    return this.announcementService.sendToPublication(uuid, token);
+  }
+
+  @GetMapping("/tag")
+  @Operation(summary = "Получить по тэгам")
+  public Response findAnnouncementsByTags(@RequestBody List<TagEntity> tags){
+    return this.announcementService.findByTags(tags);
   }
 
   @GetMapping()
