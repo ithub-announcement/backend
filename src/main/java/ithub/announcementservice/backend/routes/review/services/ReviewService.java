@@ -98,12 +98,6 @@ public class ReviewService {
       review.setInspector(this.auth.getUserByToken(token));
       review.setStatusReview(StatusReview.accept);
       this.reviewRepository.save(review);
-
-      Announcement announcement = this.announcementRepository.findById(uuid).get();
-      announcement.setStatus(AnnouncementStatus.PUBLIC);
-      announcement.setTags(review.getTags());
-
-      this.announcementRepository.save(announcement);
       return new Response(HttpStatus.OK.value(), "Успешно одобрена");
     } catch (Exception err) {
       log.error("Error: " + err.getMessage(), err);
