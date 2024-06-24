@@ -12,6 +12,4 @@ public class TagEntity {
   private Long id;
   private String value;
   private String baseColor;
-  @Column(columnDefinition = "varchar(6)")
-  private String textColor;
 }
