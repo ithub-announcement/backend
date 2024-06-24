@@ -22,8 +22,8 @@ public class AnnouncementController {
 
   @PostMapping("/toPublic")
   @Operation(summary = "Отправить в публикацию")
-  public Response sendToPublic(@RequestHeader String token, @RequestBody UUID uuid){
-    return this.announcementService.sendToPublication(uuid, token);
+  public Response sendToPublic(@RequestHeader String Authorization, @RequestBody UUID uuid){
+    return this.announcementService.sendToPublication(uuid, Authorization);
   }
 
   @GetMapping("/tag")
