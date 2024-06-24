@@ -99,6 +99,11 @@ public class ReviewService {
       review.setStatusReview(StatusReview.accept);
       this.reviewRepository.save(review);
 
+      Announcement announcement = this.announcementRepository.findById(uuid).get();
+      announcement.setStatus(AnnouncementStatus.PUBLIC);
+      announcement.setTags(review.getTags());
+
+      this.announcementRepository.save(announcement);
       return new Response(HttpStatus.OK.value(), "Успешно одобрена");
     } catch (Exception err) {
       return new Response(HttpStatus.INTERNAL_SERVER_ERROR.value(), err.getMessage());
