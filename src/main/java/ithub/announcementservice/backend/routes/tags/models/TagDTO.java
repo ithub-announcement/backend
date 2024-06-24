@@ -10,5 +10,4 @@ import lombok.NoArgsConstructor;
 public class TagDTO {
   private String value;
   private String baseColor;
-  private String textColor;
 }

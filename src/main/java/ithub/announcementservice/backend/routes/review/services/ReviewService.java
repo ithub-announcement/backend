@@ -106,6 +106,7 @@ public class ReviewService {
       this.announcementRepository.save(announcement);
       return new Response(HttpStatus.OK.value(), "Успешно одобрена");
     } catch (Exception err) {
+      log.error("Error: " + err.getMessage(), err);
       return new Response(HttpStatus.INTERNAL_SERVER_ERROR.value(), err.getMessage());
     }
   }
