@@ -26,17 +26,9 @@ public class AnnouncementController {
   @PostMapping("/toPublic")
   @Operation(summary = "Отправить в публикацию")
   public Response sendToPublic(@RequestHeader String Authorization, @RequestBody payloadUUid uuid){
-    String uuidString = uuid.getUuid();
-    log.info("Received UUID: {}", uuidString);
-    try {
-      UUID uuidValue = UUID.fromString(uuidString);
-      log.info("Parsed UUID: {}", uuidValue);
-      return this.announcementService.sendToPublication(uuidValue, Authorization);
-    }catch (Exception e){
-      log.error("Error sending announcement: ", e);
-      throw new IllegalStateException();
-    }
+    return this.announcementService.sendToPublication(UUID.fromString(uuid.getUuid()), Authorization);
   }
+
 
   @GetMapping("/tag")
   @Operation(summary = "Получить по тэгам")
