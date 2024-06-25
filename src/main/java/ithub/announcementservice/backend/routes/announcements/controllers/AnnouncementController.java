@@ -3,6 +3,7 @@ package ithub.announcementservice.backend.routes.announcements.controllers;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import ithub.announcementservice.backend.core.models.response.types.Response;
+import ithub.announcementservice.backend.routes.announcements.payloadUUid;
 import ithub.announcementservice.backend.routes.announcements.services.AnnouncementService;
 import ithub.announcementservice.backend.routes.tags.models.TagEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,8 +23,8 @@ public class AnnouncementController {
 
   @PostMapping("/toPublic")
   @Operation(summary = "Отправить в публикацию")
-  public Response sendToPublic(@RequestHeader String Authorization, @RequestBody UUID uuid){
-    return this.announcementService.sendToPublication(uuid, Authorization);
+  public Response sendToPublic(@RequestHeader String Authorization, @RequestBody payloadUUid uuid){
+    return this.announcementService.sendToPublication(UUID.fromString(uuid.getUuid()), Authorization);
   }
 
   @GetMapping("/tag")
