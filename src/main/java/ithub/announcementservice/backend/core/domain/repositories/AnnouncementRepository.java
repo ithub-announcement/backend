@@ -1,14 +1,11 @@
 package ithub.announcementservice.backend.core.domain.repositories;
 
-import io.swagger.v3.oas.annotations.Operation;
 import ithub.announcementservice.backend.core.domain.models.AnnouncementStatus;
 import ithub.announcementservice.backend.core.domain.models.entities.Announcement;
 import ithub.announcementservice.backend.routes.tags.models.TagEntity;
-import lombok.Value;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -24,6 +21,6 @@ public interface AnnouncementRepository extends JpaRepository<Announcement, UUID
 
   Optional<Announcement> findByAuthorIdAndStatusAndUuid(String authorId, AnnouncementStatus status, UUID uuid );
 //findAllByStatusOrderByDateTimeDesc
-  List<Announcement> findAnnouncementByStatusAndTagsIn( AnnouncementStatus status, Collection<TagEntity> tags);
+  List<Announcement> findAnnouncementByStatusAndTagsIn( AnnouncementStatus status, List<TagEntity> tags);
 
 }
