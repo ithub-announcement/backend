@@ -21,6 +21,6 @@ public interface AnnouncementRepository extends JpaRepository<Announcement, UUID
 
   Optional<Announcement> findByAuthorIdAndStatusAndUuid(String authorId, AnnouncementStatus status, UUID uuid );
 //findAllByStatusOrderByDateTimeDesc
-  List<Announcement> findAnnouncementByStatusAndTagsIn( AnnouncementStatus status, Collection<TagEntity> tags);
+  List<Announcement> findAnnouncementByStatusAndTagsIn( AnnouncementStatus status, List<TagEntity> tags);
 
 }
