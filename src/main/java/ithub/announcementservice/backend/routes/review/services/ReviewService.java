@@ -12,6 +12,9 @@ import ithub.announcementservice.backend.routes.review.repositories.ReviewReposi
 import ithub.announcementservice.backend.routes.review.models.StatusReview;
 import ithub.announcementservice.backend.routes.review.models.Review;
 import ithub.announcementservice.backend.routes.tags.services.TagsService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -24,21 +27,15 @@ import java.util.UUID;
  * @author Горелов Дмитрий
  * */
 
+@Slf4j
 @Service
+@RequiredArgsConstructor
 public class ReviewService {
   private final AnnouncementRepository announcementRepository;
   private final ReviewRepository reviewRepository;
   private final TagsService tagsService;
   private final RestClientForAuth auth;
   private final Mapper mapper;
-
-  public ReviewService(final AnnouncementRepository repository, final ReviewRepository reviewRepository, final TagsService tagsService, final RestClientForAuth auth, final Mapper mapper) {
-    this.announcementRepository = repository;
-    this.reviewRepository = reviewRepository;
-    this.tagsService = tagsService;
-    this.auth = auth;
-    this.mapper = mapper;
-  }
 
   /**
    * Принять на модерацию
@@ -101,9 +98,9 @@ public class ReviewService {
       review.setInspector(this.auth.getUserByToken(token));
       review.setStatusReview(StatusReview.accept);
       this.reviewRepository.save(review);
-
       return new Response(HttpStatus.OK.value(), "Успешно одобрена");
     } catch (Exception err) {
+      log.error("Error: " + err.getMessage(), err);
       return new Response(HttpStatus.INTERNAL_SERVER_ERROR.value(), err.getMessage());
     }
   }
@@ -129,7 +126,7 @@ public class ReviewService {
 
   public Response getReviews() {
     try {
-      return new ResponseData<>(HttpStatus.OK.value(), "Успешно получено", this.reviewRepository.findAll());
+      return new ResponseData<>(HttpStatus.OK.value(), "Успешно получено", this.reviewRepository.findAllByOrderByDateTimeDesc());
     } catch (Exception err) {
       return new Response(HttpStatus.INTERNAL_SERVER_ERROR.value(), err.getMessage());
     }
