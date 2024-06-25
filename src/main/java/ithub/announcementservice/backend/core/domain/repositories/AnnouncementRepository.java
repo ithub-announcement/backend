@@ -13,13 +13,14 @@ import java.util.UUID;
 @Repository
 public interface AnnouncementRepository extends JpaRepository<Announcement, UUID> {
   List<Announcement> findAllByStatusOrderByDateTimeDesc(AnnouncementStatus status);
+  List<Announcement> findByStatus(AnnouncementStatus status);
 
   Optional<Announcement> findByStatusAndUuid(AnnouncementStatus status, UUID uuid);
 
-  List<Announcement> findAllByAuthorIdAndStatusOrderByDateTimeDesc(String authorId, AnnouncementStatus status);
+  List<Announcement> findByAuthorIdAndStatus(String authorId, AnnouncementStatus status);
 
-  Optional<Announcement> findByAuthorIdAndStatusAndUuid(String authorId, AnnouncementStatus status, UUID uuid);
-
-  List<Announcement> findAnnouncementByStatusAndTagsIn(AnnouncementStatus status, List<TagEntity> tags);
+  Optional<Announcement> findByAuthorIdAndStatusAndUuid(String authorId, AnnouncementStatus status, UUID uuid );
+//findAllByStatusOrderByDateTimeDesc
+  List<Announcement> findAnnouncementByStatusAndTagsIn( AnnouncementStatus status, Collection<TagEntity> tags);
 
 }
