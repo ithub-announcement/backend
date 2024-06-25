@@ -6,11 +6,13 @@ import ithub.announcementservice.backend.core.models.response.types.Response;
 import ithub.announcementservice.backend.routes.announcements.payloadUUid;
 import ithub.announcementservice.backend.routes.announcements.services.AnnouncementService;
 import ithub.announcementservice.backend.routes.tags.models.TagEntity;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @Tag(name = "Обьявления")
 @RestController
 @RequestMapping("/announcements")
@@ -24,7 +26,16 @@ public class AnnouncementController {
   @PostMapping("/toPublic")
   @Operation(summary = "Отправить в публикацию")
   public Response sendToPublic(@RequestHeader String Authorization, @RequestBody payloadUUid uuid){
-    return this.announcementService.sendToPublication(UUID.fromString(uuid.getUuid()), Authorization);
+    String uuidString = uuid.getUuid();
+    log.info("Received UUID: {}", uuidString);
+    try {
+      UUID uuidValue = UUID.fromString(uuidString);
+      log.info("Parsed UUID: {}", uuidValue);
+      return this.announcementService.sendToPublication(uuidValue, Authorization);
+    }catch (Exception e){
+      log.error("Error sending announcement: ", e);
+      throw new IllegalStateException();
+    }
   }
 
   @GetMapping("/tag")
