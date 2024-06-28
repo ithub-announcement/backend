@@ -9,6 +9,7 @@ import ithub.announcementservice.backend.core.domain.repositories.AnnouncementRe
 import ithub.announcementservice.backend.core.models.response.types.Response;
 import ithub.announcementservice.backend.core.models.response.types.ResponseData;
 import ithub.announcementservice.backend.routes.review.models.ReviewAcceptPayload;
+import ithub.announcementservice.backend.routes.review.models.ReviewDto;
 import ithub.announcementservice.backend.routes.review.repositories.ReviewRepository;
 import ithub.announcementservice.backend.routes.review.models.StatusReview;
 import ithub.announcementservice.backend.routes.review.models.Review;
@@ -82,26 +83,33 @@ public class ReviewService {
     }
   }
 
-//  /**
-//   * Изменить публикацию
-//   *
-//   * @param uuid UUID
-//   * */
-//
-//  public Response rename(UUID uuid, String token) {
-//    try{
-//      Review review = this.reviewRepository.findById(uuid).get();
-//
-//      User deleted = auth.getRoleAndUserByToken(token);
-//
-//      if (!review.getAuthorId().equals(deleted.getUid()) && deleted.getRole() != "ADMIN"){
-//        return new Response(HttpStatus.NOT_FOUND.value(), "Не явлеятся автором объявления");
-//      }
-//
-//    }catch (Exception err){
-//      return new Response(HttpStatus.INTERNAL_SERVER_ERROR.value(), err.getMessage());
-//    }
-//  }
+  /**
+   * Изменить публикацию
+   *
+   * @param uuid UUID
+   * */
+
+  public Response rename(UUID uuid, String token, ReviewDto dto) {
+    try{
+      Review review = this.reviewRepository.findById(uuid).get();
+
+      User deleted = auth.getRoleAndUserByToken(token);
+
+      if (!review.getAuthorId().equals(deleted.getUid()) && deleted.getRole() != "ADMIN"){
+        return new Response(HttpStatus.NOT_FOUND.value(), "Не явлеятся автором объявления");
+      }
+
+      review.setTitle(dto.getTitle());
+      review.setContent(dto.getContent());
+      review.setTags(dto.getTags());
+      review.setInspector(dto.getInspector());
+
+      this.reviewRepository.save(review);
+      return new Response(HttpStatus.OK.value(), "Успешно изменено");
+    }catch (Exception err){
+      return new Response(HttpStatus.INTERNAL_SERVER_ERROR.value(), err.getMessage());
+    }
+  }
 
   /**
    * Одобрить публикацию

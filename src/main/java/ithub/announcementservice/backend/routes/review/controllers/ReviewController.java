@@ -1,6 +1,7 @@
 package ithub.announcementservice.backend.routes.review.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
+import ithub.announcementservice.backend.routes.review.models.ReviewDto;
 import org.springframework.web.bind.annotation.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -41,8 +42,8 @@ public class ReviewController {
 
   @Operation(summary = "Изменить")
   @PostMapping("/rename/{uuid}")
-  public Response renameReview(@RequestHeader String Authorization, @PathVariable UUID uuid){
-    return null;
+  public Response renameReview(@RequestHeader String Authorization, @PathVariable UUID uuid, @RequestBody ReviewDto dto){
+    return this.reviewService.rename(uuid, Authorization, dto);
   }
 
   @Operation(summary = "Получить одну заявку по UUID")
