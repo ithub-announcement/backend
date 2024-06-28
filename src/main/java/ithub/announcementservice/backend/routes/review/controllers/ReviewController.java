@@ -39,6 +39,12 @@ public class ReviewController {
     return this.reviewService.rejectReview(uuid, comments, Authorization);
   }
 
+  @Operation(summary = "Изменить")
+  @PostMapping("/rename/{uuid}")
+  public Response renameReview(@RequestHeader String Authorization, @PathVariable UUID uuid){
+    return null;
+  }
+
   @Operation(summary = "Получить одну заявку по UUID")
   @GetMapping("/{uuid}")
   public Response getReview(@PathVariable UUID uuid) {

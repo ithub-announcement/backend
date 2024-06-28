@@ -1,6 +1,7 @@
 package ithub.announcementservice.backend.routes.review.services;
 
 import ithub.announcementservice.backend.core.api.auth.RestClientForAuth;
+import ithub.announcementservice.backend.core.api.auth.models.User;
 import ithub.announcementservice.backend.core.config.Mapper;
 import ithub.announcementservice.backend.core.domain.models.AnnouncementStatus;
 import ithub.announcementservice.backend.core.domain.models.entities.Announcement;
@@ -80,6 +81,27 @@ public class ReviewService {
       return new Response(HttpStatus.INTERNAL_SERVER_ERROR.value(), err.getMessage());
     }
   }
+
+//  /**
+//   * Изменить публикацию
+//   *
+//   * @param uuid UUID
+//   * */
+//
+//  public Response rename(UUID uuid, String token) {
+//    try{
+//      Review review = this.reviewRepository.findById(uuid).get();
+//
+//      User deleted = auth.getRoleAndUserByToken(token);
+//
+//      if (!review.getAuthorId().equals(deleted.getUid()) && deleted.getRole() != "ADMIN"){
+//        return new Response(HttpStatus.NOT_FOUND.value(), "Не явлеятся автором объявления");
+//      }
+//
+//    }catch (Exception err){
+//      return new Response(HttpStatus.INTERNAL_SERVER_ERROR.value(), err.getMessage());
+//    }
+//  }
 
   /**
    * Одобрить публикацию

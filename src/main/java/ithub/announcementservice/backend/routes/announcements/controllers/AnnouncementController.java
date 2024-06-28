@@ -50,7 +50,7 @@ public class AnnouncementController {
 
   @DeleteMapping("{uuid}")
   @Operation(summary = "Архирировать обьявление")
-  public Response deleteAnnouncementByUUID(@PathVariable UUID uuid) {
-    return this.announcementService.deleteByUUID(uuid);
+  public Response deleteAnnouncementByUUID(@RequestHeader String Authorization, @PathVariable UUID uuid) {
+    return this.announcementService.deleteByUUID(uuid, Authorization);
   }
 }
