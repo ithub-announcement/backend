@@ -128,16 +128,23 @@ public class  AnnouncementService {
    * @param uuid { UUID }
    * */
 
-  public Response deleteByUUID(UUID uuid) {
+  public Response deleteByUUID(UUID uuid, String token) {
     try {
-      Optional<Announcement> announcement = this.repository.findById(uuid);
+      Announcement announcement = this.repository.findById(uuid).get();
 
-      if (announcement.isEmpty()) {
+      if (announcement == null) {
         return new Response(HttpStatus.NOT_FOUND.value(), "not found");
       }
 
-      announcement.get().setStatus(AnnouncementStatus.ARCHIVE);
-      return new Response(HttpStatus.OK.value(), "archived");
+      User deleted = auth.getRoleAndUserByToken(token);
+
+      if (!announcement.getAuthorId().equals(deleted.getUid()) && deleted.getRole() != "ADMIN"){
+        return new Response(HttpStatus.NOT_FOUND.value(), "Не явлеятся автором объявления");
+      }
+
+      announcement.setStatus(AnnouncementStatus.ARCHIVE);
+      this.repository.save(announcement);
+      return new Response(HttpStatus.I_AM_A_TEAPOT.value(), "ARCHIVE");
     } catch (Exception err) {
       return new Response(HttpStatus.INTERNAL_SERVER_ERROR.value(), err.getMessage());
     }
